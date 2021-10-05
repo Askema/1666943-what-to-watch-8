@@ -1,22 +1,12 @@
 import FilmCard from '../film-card/film-card';
+import {Promo, Films} from '../../types/types';
 
 type MainProps = {
-  promo: {
-    name: string,
-    genre: string,
-    released: number,
-    previewImage: string,
-    posterImage: string,
-  },
-  films: {
-    id: number,
-    name: string,
-    previewImage: string,
-  }[];
+  promo: Promo;
+  films: Films;
 }
 
-function Main(props: MainProps): JSX.Element {
-  const {promo, films} = props;
+function Main({promo, films}: MainProps): JSX.Element {
 
   return (
     <>

@@ -1,23 +1,12 @@
 import Main from '../main/main';
+import {Promo, Films} from '../../types/types';
 
 type AppProps = {
-  promo: {
-    name: string,
-    genre: string,
-    released: number,
-    previewImage: string,
-    posterImage: string,
-  },
-  films: {
-    id: number,
-    name: string,
-    previewImage: string,
-  }[];
+  promo: Promo;
+  films: Films;
 }
 
-function App(props: AppProps): JSX.Element {
-  const {promo, films} = props;
-
+function App({promo, films}: AppProps): JSX.Element {
 
   return (
     <Main
