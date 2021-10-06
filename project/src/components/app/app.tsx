@@ -1,4 +1,4 @@
-import Main from '../main/main';
+import Main from '../main-page/MainPage';
 import {Promo, Films} from '../../types/types';
 
 type AppProps = {
