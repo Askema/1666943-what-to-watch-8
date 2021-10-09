@@ -1,10 +1,10 @@
 import Main from '../main-page/MainPage';
 import {Switch, Route, BrowserRouter} from 'react-router-dom';
-import {AppRoute, AuthorizationStatus} from '../../const';
+import {AppRoute, AuthorizationStatus} from '../../constants/const';
 import AddReview from '../add-review-page/AddReviewPage';
 import Film from '../film-page/FilmPage';
 import MyList from '../my-list-page/MyListPage';
-import NotFound from '../not-found-page/NotFoundPage';
+import NotFoundPage from '../not-found-page/NotFoundPage';
 import Player from '../player-page/PlayerPage';
 import PrivateRoute from '../private-route/private-route';
 import SignIn from '../sign-in/sign-in';
@@ -26,9 +26,7 @@ function App({promo, films}: AppProps): JSX.Element {
             films={films}
           />
         </Route>
-        <Route exact path={AppRoute.SignIn}>
-          <SignIn />
-        </Route>
+        <Route exact path={AppRoute.SignIn} component={SignIn} />
         <PrivateRoute
           exact
           path={AppRoute.MyList}
@@ -46,7 +44,7 @@ function App({promo, films}: AppProps): JSX.Element {
           <Player />
         </Route>
         <Route>
-          <NotFound />
+          <NotFoundPage />
         </Route>
       </Switch>
     </BrowserRouter>
