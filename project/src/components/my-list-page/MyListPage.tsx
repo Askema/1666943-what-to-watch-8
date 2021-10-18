@@ -1,4 +1,20 @@
-function MyList(): JSX.Element {
+import {useState, MouseEvent} from 'react';
+import {Films} from '../../types/film';
+import FilmCard from '../film-card/film-card';
+import {Link} from 'react-router-dom';
+import { AppRoute } from '../../constants/const';
+import {useHistory} from 'react-router';
+
+type MyListPageProps = {
+  films: Films;
+}
+
+function MyListPage({films}: MyListPageProps): JSX.Element {
+
+  const favoriteFilms = films.filter((film) => film.isFavorite === true);
+  const history = useHistory();
+  const [, setActiveCard] = useState({});
+
   return (
     <div className="user-page">
       <header className="page-header user-page__head">
@@ -19,7 +35,7 @@ function MyList(): JSX.Element {
             </div>
           </li>
           <li className="user-block__item">
-            <a className="user-block__link" href="/">Sign out</a>
+            <Link to={AppRoute.SignIn} className="user-block__link"> sign out</Link>
           </li>
         </ul>
       </header>
@@ -28,88 +44,25 @@ function MyList(): JSX.Element {
         <h2 className="catalog__title visually-hidden">Catalog</h2>
 
         <div className="catalog__films-list">
-          <article className="small-film-card catalog__films-card">
-            <div className="small-film-card__image">
-              <img src="img/fantastic-beasts-the-crimes-of-grindelwald.jpg" alt="Fantastic Beasts: The Crimes of Grindelwald" width="280" height="175" />
-            </div>
-            <h3 className="small-film-card__title">
-              <a className="small-film-card__link" href="film-page.html">Fantastic Beasts: The Crimes of Grindelwald</a>
-            </h3>
-          </article>
+          {favoriteFilms.map((film, id) => {
+            const keyValue = `${id}`;
 
-          <article className="small-film-card catalog__films-card">
-            <div className="small-film-card__image">
-              <img src="img/bohemian-rhapsody.jpg" alt="Bohemian Rhapsody" width="280" height="175" />
-            </div>
-            <h3 className="small-film-card__title">
-              <a className="small-film-card__link" href="film-page.html">Bohemian Rhapsody</a>
-            </h3>
-          </article>
-
-          <article className="small-film-card catalog__films-card">
-            <div className="small-film-card__image">
-              <img src="img/macbeth.jpg" alt="Macbeth" width="280" height="175" />
-            </div>
-            <h3 className="small-film-card__title">
-              <a className="small-film-card__link" href="film-page.html">Macbeth</a>
-            </h3>
-          </article>
-
-          <article className="small-film-card catalog__films-card">
-            <div className="small-film-card__image">
-              <img src="img/aviator.jpg" alt="Aviator" width="280" height="175" />
-            </div>
-            <h3 className="small-film-card__title">
-              <a className="small-film-card__link" href="film-page.html">Aviator</a>
-            </h3>
-          </article>
-
-
-          <article className="small-film-card catalog__films-card">
-            <div className="small-film-card__image">
-              <img src="img/we-need-to-talk-about-kevin.jpg" alt="We need to talk about Kevin" width="280" height="175" />
-            </div>
-            <h3 className="small-film-card__title">
-              <a className="small-film-card__link" href="film-page.html">We need to talk about Kevin</a>
-            </h3>
-          </article>
-
-          <article className="small-film-card catalog__films-card">
-            <div className="small-film-card__image">
-              <img src="img/what-we-do-in-the-shadows.jpg" alt="What We Do in the Shadows" width="280" height="175" />
-            </div>
-            <h3 className="small-film-card__title">
-              <a className="small-film-card__link" href="film-page.html">What We Do in the Shadows</a>
-            </h3>
-          </article>
-
-          <article className="small-film-card catalog__films-card">
-            <div className="small-film-card__image">
-              <img src="img/revenant.jpg" alt="Revenant" width="280" height="175" />
-            </div>
-            <h3 className="small-film-card__title">
-              <a className="small-film-card__link" href="film-page.html">Revenant</a>
-            </h3>
-          </article>
-
-          <article className="small-film-card catalog__films-card">
-            <div className="small-film-card__image">
-              <img src="img/johnny-english.jpg" alt="Johnny English" width="280" height="175" />
-            </div>
-            <h3 className="small-film-card__title">
-              <a className="small-film-card__link" href="film-page.html">Johnny English</a>
-            </h3>
-          </article>
-
-
-          <article className="small-film-card catalog__films-card">
-            <div className="small-film-card__image">
-              <img src="img/shutter-island.jpg" alt="Shutter Island" width="280" height="175" />
-            </div>
-            <h3 className="small-film-card__title">
-              <a className="small-film-card__link" href="film-page.html">Shutter Island</a>
-            </h3>
-          </article>
+            return (
+              <article key={keyValue} className="small-film-card catalog__films-card"
+                onMouseEnter={({target}: MouseEvent<HTMLElement>) => {
+                  setActiveCard(film);
+                }}
+                onMouseLeave={({target}: MouseEvent<HTMLElement>) => {
+                  setActiveCard([{}]);
+                }}
+                onClick={() => history.push(`/films/${film.id}`)}
+              >
+                <FilmCard
+                  film={film}
+                />
+              </article>
+            );
+          })}
         </div>
       </section>
 
@@ -130,4 +83,4 @@ function MyList(): JSX.Element {
   );
 }
 
-export default MyList;
+export default MyListPage;
