@@ -1,4 +1,4 @@
-import {Film, Films} from '../../types/film';
+import {Film} from '../../types/film';
 import {useParams, useHistory} from 'react-router';
 import NotFoundPage from '../not-found-page/NotFoundPage';
 import {Link} from 'react-router-dom';
@@ -6,7 +6,7 @@ import { AppRoute } from '../../constants/const';
 import AddReviewForm from '../add-review-form/add-review-form';
 
 type AddReviewPageProps = {
-  films: Films;
+  films: Film[];
 }
 
 function AddReviewPage(props: AddReviewPageProps): JSX.Element {
@@ -15,7 +15,7 @@ function AddReviewPage(props: AddReviewPageProps): JSX.Element {
   const film: Film | undefined = films.find((element) => element.id === Number(id));
   const history = useHistory();
 
-  if (film !== undefined) {
+  if (film) {
     return (
       <section className="film-card film-card--full">
         <div className="film-card__header">
@@ -70,11 +70,9 @@ function AddReviewPage(props: AddReviewPageProps): JSX.Element {
 
       </section>
     );
-  } else {
-    return (
-      <NotFoundPage />
-    );
-  }
+  } return (
+    <NotFoundPage />
+  );
 }
 
 export default AddReviewPage;

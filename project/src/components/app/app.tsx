@@ -2,7 +2,7 @@ import {Switch, Route, BrowserRouter} from 'react-router-dom';
 import {AppRoute, AuthorizationStatus} from '../../constants/const';
 import AddReviewPage from '../add-review-page/AddReviewPage';
 import FilmPage from '../film-page/FilmPage';
-import { Films } from '../../types/film';
+import { Film } from '../../types/film';
 import MainPage from '../main-page/MainPage';
 import MyList from '../my-list-page/MyListPage';
 import NotFoundPage from '../not-found-page/NotFoundPage';
@@ -13,7 +13,7 @@ import SignIn from '../sign-in/sign-in';
 
 type AppProps = {
   promo: Promo;
-  films: Films;
+  films: Film[];
 }
 
 function App({promo, films}: AppProps): JSX.Element {

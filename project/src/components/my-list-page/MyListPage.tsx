@@ -1,12 +1,12 @@
 import {useState, MouseEvent} from 'react';
-import {Films} from '../../types/film';
+import {Film} from '../../types/film';
 import FilmCard from '../film-card/film-card';
 import {Link} from 'react-router-dom';
 import { AppRoute } from '../../constants/const';
 import {useHistory} from 'react-router';
 
 type MyListPageProps = {
-  films: Films;
+  films: Film[];
 }
 
 function MyListPage({films}: MyListPageProps): JSX.Element {

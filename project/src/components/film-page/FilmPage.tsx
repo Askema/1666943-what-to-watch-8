@@ -1,11 +1,11 @@
 import { AppRoute } from '../../constants/const';
-import {Film, Films} from '../../types/film';
+import {Film} from '../../types/film';
 import {useParams, useHistory} from 'react-router';
 import {Link} from 'react-router-dom';
 import NotFoundPage from '../not-found-page/NotFoundPage';
 
 type FilmPageProps = {
-  films: Films;
+  films: Film[];
 }
 
 function FilmPage({films}: FilmPageProps): JSX.Element {

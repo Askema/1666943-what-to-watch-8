@@ -5,7 +5,7 @@ type FilmCardProps = {
   film: Film;
 }
 
-function FilmCardPage({film}: FilmCardProps): JSX.Element {
+function FilmCard({film}: FilmCardProps): JSX.Element {
 
 
   return (
@@ -20,4 +20,4 @@ function FilmCardPage({film}: FilmCardProps): JSX.Element {
   );
 }
 
-export default FilmCardPage;
+export default FilmCard;

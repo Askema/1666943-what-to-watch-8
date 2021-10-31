@@ -1,13 +1,13 @@
 import {Link} from 'react-router-dom';
 import {useHistory} from 'react-router';
 import { AppRoute } from '../../constants/const';
-import { Films } from '../../types/film';
+import { Film } from '../../types/film';
 import FilmList from '../film-list/film-list';
 import { Promo } from '../../types/promo';
 
 type MainProps = {
   promo: Promo;
-  films: Films;
+  films: Film[];
 }
 
 function MainPage({promo, films}: MainProps): JSX.Element {

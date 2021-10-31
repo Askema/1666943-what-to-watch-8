@@ -1,10 +1,10 @@
 import {useParams} from 'react-router';
 import {Link} from 'react-router-dom';
-import {Film, Films} from '../../types/film';
+import {Film} from '../../types/film';
 import NotFoundPage from '../not-found-page/NotFoundPage';
 
 type PlayerPageProps = {
-  films: Films;
+  films: Film[];
 }
 
 function PlayerPage({films}: PlayerPageProps): JSX.Element {
