@@ -1,12 +1,17 @@
-import FilmCard from '../film-card/film-card';
-import {Promo, Films} from '../../types/types';
+import {Link} from 'react-router-dom';
+import {useHistory} from 'react-router';
+import { AppRoute } from '../../constants/const';
+import { Film } from '../../types/film';
+import FilmList from '../film-list/film-list';
+import { Promo } from '../../types/promo';
 
 type MainProps = {
   promo: Promo;
-  films: Films;
+  films: Film[];
 }
 
-function Main({promo, films}: MainProps): JSX.Element {
+function MainPage({promo, films}: MainProps): JSX.Element {
+  const history = useHistory();
 
   return (
     <>
@@ -28,12 +33,14 @@ function Main({promo, films}: MainProps): JSX.Element {
 
           <ul className="user-block">
             <li className="user-block__item">
-              <div className="user-block__avatar">
+              <div className="user-block__avatar"
+                onClick={() => history.push(AppRoute.MyList)}
+              >
                 <img src="img/avatar.jpg" alt="User avatar" width="63" height="63" />
               </div>
             </li>
             <li className="user-block__item">
-              <a className="user-block__link" href="/">Sign out</a>
+              <Link to={AppRoute.SignIn} className="user-block__link"> Sign out</Link>
             </li>
           </ul>
         </header>
@@ -106,9 +113,9 @@ function Main({promo, films}: MainProps): JSX.Element {
             </li>
           </ul>
 
-          <div className="catalog__films-list">
-            {films.map((film) => <FilmCard key={film.id} film={film} />)}
-          </div>
+          <FilmList
+            films={films}
+          />
 
           <div className="catalog__more">
             <button className="catalog__button" type="button">Show more</button>
@@ -133,4 +140,4 @@ function Main({promo, films}: MainProps): JSX.Element {
   );
 }
 
-export default Main;
+export default MainPage;
