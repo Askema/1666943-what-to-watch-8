@@ -18,7 +18,7 @@ export const films: Film[] = [
     runTime: 99,
     genre: 'Comedy',
     released: 2014,
-    isFavorite: false,
+    isFavorite: true,
   },
   {
     id: 2,
@@ -37,7 +37,7 @@ export const films: Film[] = [
     runTime: 99,
     genre: 'Comedy',
     released: 2014,
-    isFavorite: false,
+    isFavorite: true,
   },
   {
     id: 3,

@@ -1,10 +1,11 @@
 import {useState, ChangeEvent, Fragment} from 'react';
 
-const AddReviewRatingStars: number[] = new Array(10).fill('').map((_, index) => index+1).reverse();
+const AddReviewRatingStars = Array.from({ length: 11 }, (v, k) => k).reverse();
+AddReviewRatingStars.pop();
 
-function RatingStar(): JSX.Element {
+function Rating(): JSX.Element {
   const [, setRatingValue] = useState(0);
-  const handleOnRatingChange= (evt: ChangeEvent<HTMLInputElement>) => {
+  const onRatingChange= (evt: ChangeEvent<HTMLInputElement>) => {
     setRatingValue(Number(evt.target.value));
   };
 
@@ -14,7 +15,7 @@ function RatingStar(): JSX.Element {
         (
           <Fragment key={`itemStarRating-${number}`}>
             <input
-              onChange={handleOnRatingChange}
+              onChange={onRatingChange}
               className="rating__input"
               id={`star-rating-${number}`}
               type="radio"
@@ -28,4 +29,4 @@ function RatingStar(): JSX.Element {
   );
 }
 
-export default RatingStar;
+export default Rating;

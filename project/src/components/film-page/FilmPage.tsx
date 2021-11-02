@@ -14,7 +14,7 @@ function FilmPage({films}: FilmPageProps): JSX.Element {
   const film: Film | undefined = films.find((element) => element.id === Number(id));
 
 
-  if (film !== undefined) {
+  if (film) {
     return (
       <>
         <section className="film-card film-card--full">

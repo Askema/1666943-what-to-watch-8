@@ -1,9 +1,7 @@
-import {useState, MouseEvent} from 'react';
 import {Film} from '../../types/film';
 import FilmCard from '../film-card/film-card';
 import {Link} from 'react-router-dom';
 import { AppRoute } from '../../constants/const';
-import {useHistory} from 'react-router';
 
 type MyListPageProps = {
   films: Film[];
@@ -12,8 +10,6 @@ type MyListPageProps = {
 function MyListPage({films}: MyListPageProps): JSX.Element {
 
   const favoriteFilms = films.filter((film) => film.isFavorite === true);
-  const history = useHistory();
-  const [, setActiveCard] = useState({});
 
   return (
     <div className="user-page">
@@ -44,25 +40,13 @@ function MyListPage({films}: MyListPageProps): JSX.Element {
         <h2 className="catalog__title visually-hidden">Catalog</h2>
 
         <div className="catalog__films-list">
-          {favoriteFilms.map((film, id) => {
-            const keyValue = `${id}`;
-
-            return (
-              <article key={keyValue} className="small-film-card catalog__films-card"
-                onMouseEnter={({target}: MouseEvent<HTMLElement>) => {
-                  setActiveCard(film);
-                }}
-                onMouseLeave={({target}: MouseEvent<HTMLElement>) => {
-                  setActiveCard([{}]);
-                }}
-                onClick={() => history.push(`/films/${film.id}`)}
-              >
-                <FilmCard
-                  film={film}
-                />
-              </article>
-            );
-          })}
+          {favoriteFilms.map((film) => (
+            <FilmCard
+              key={film.id}
+              film={film}
+            />
+          ),
+          )};
         </div>
       </section>
 

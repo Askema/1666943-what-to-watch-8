@@ -1,19 +1,19 @@
 import {useState, ChangeEvent} from 'react';
-import RatingStar from '../rating-star/rating-star';
+import Rating from '../rating/rating';
 
 function AddReviewForm(): JSX.Element {
-  const [, setReviewText] = useState('');
+  const [reviewText, setReviewText] = useState('');
 
   return (
     <form action="#" className="add-review__form">
       <div className="rating">
         <div className="rating__stars">
-          <RatingStar/>
+          <Rating/>
         </div>
       </div>
 
       <div className="add-review__text">
-        <textarea className="add-review__textarea" name="review-text" id="review-text" placeholder="Review text"
+        <textarea className="add-review__textarea" name="review-text" id="review-text" placeholder="Review text" value={reviewText}
           onChange={({target}: ChangeEvent<HTMLTextAreaElement>) => {
             setReviewText(target.value);
           }}
