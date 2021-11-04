@@ -1,14 +1,17 @@
 import {Link} from 'react-router-dom';
 import {Film} from '../../types/film';
-import {useState, MouseEvent} from 'react';
+import {MouseEvent, Dispatch, SetStateAction} from 'react';
 import {useHistory} from 'react-router';
+import VideoPlayer from '../video-player/video-player';
 
 type FilmCardProps = {
   film: Film;
+  isActive: boolean;
+  setActiveCardId: Dispatch<SetStateAction<number | null>>;
 }
 
-function FilmCard({film}: FilmCardProps): JSX.Element {
-  const [, setActiveCardId] = useState<number | null>(null);
+function FilmCard({film, isActive, setActiveCardId}: FilmCardProps): JSX.Element {
+  //const [activeCardId, setActiveCardId] = useState<number | null>(null);
   const history = useHistory();
 
   return (
@@ -22,7 +25,7 @@ function FilmCard({film}: FilmCardProps): JSX.Element {
       onClick={() => history.push(`/films/${film.id}`)}
     >
       <div className="small-film-card__image">
-        <img src={film.previewImage} alt={film.name} width="280" height="175" />
+        <VideoPlayer src={film.previewVideoLink} previewImage={film.previewImage} autoPlay={false} muted isActive={isActive}/>
       </div>
       <h3 className="small-film-card__title">
         <Link to={`/films/${film.id}`} className="small-film-card__link">{film.name}</Link>

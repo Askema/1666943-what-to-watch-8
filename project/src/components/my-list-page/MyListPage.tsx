@@ -2,12 +2,14 @@ import {Film} from '../../types/film';
 import FilmCard from '../film-card/film-card';
 import {Link} from 'react-router-dom';
 import { AppRoute } from '../../constants/const';
+import {useState} from 'react';
 
 type MyListPageProps = {
   films: Film[];
 }
 
 function MyListPage({films}: MyListPageProps): JSX.Element {
+  const [activeCardId, setActiveCardId] = useState<number | null>(null);
 
   const favoriteFilms = films.filter((film) => film.isFavorite === true);
 
@@ -42,6 +44,8 @@ function MyListPage({films}: MyListPageProps): JSX.Element {
         <div className="catalog__films-list">
           {favoriteFilms.map((film) => (
             <FilmCard
+              setActiveCardId={setActiveCardId}
+              isActive={film.id === activeCardId}
               key={film.id}
               film={film}
             />
