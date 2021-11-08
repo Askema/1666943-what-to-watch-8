@@ -11,13 +11,13 @@ type FilmCardProps = {
 }
 
 function FilmCard({film, isActive, setActiveCardId}: FilmCardProps): JSX.Element {
-  //const [activeCardId, setActiveCardId] = useState<number | null>(null);
   const history = useHistory();
-
   return (
     <article className="small-film-card catalog__films-card"
       onMouseEnter={({target}: MouseEvent<HTMLElement>) => {
-        setActiveCardId(film.id);
+        setTimeout(() => {
+          setActiveCardId(film.id);
+        }, 1000);
       }}
       onMouseLeave={({target}: MouseEvent<HTMLElement>) => {
         setActiveCardId(null);
@@ -25,7 +25,16 @@ function FilmCard({film, isActive, setActiveCardId}: FilmCardProps): JSX.Element
       onClick={() => history.push(`/films/${film.id}`)}
     >
       <div className="small-film-card__image">
-        <VideoPlayer src={film.previewVideoLink} previewImage={film.previewImage} autoPlay={false} muted isActive={isActive}/>
+        {isActive ?
+          <VideoPlayer
+            src={film.previewVideoLink}
+            previewImage={film.previewImage}
+            autoPlay={false}
+            muted
+            isActive={isActive}
+            width='100%'
+          />
+          : <img src={film.previewImage} alt={film.name} width="280" height="175"/>}
       </div>
       <h3 className="small-film-card__title">
         <Link to={`/films/${film.id}`} className="small-film-card__link">{film.name}</Link>

@@ -1,24 +1,22 @@
 import {useEffect, useRef, useState} from 'react';
 
-const VIDEO_TIMEOUT = 1000;
-
 type VideoPlayerProps = {
   previewImage: string;
   src: string;
   autoPlay: boolean;
   muted: boolean;
   isActive: boolean;
+  width: string;
 }
 
-function VideoPlayer({previewImage, src, autoPlay, muted, isActive}: VideoPlayerProps): JSX.Element {
-  const [, setIsLoading] = useState(true);
+function VideoPlayer({previewImage, src, autoPlay, muted, isActive, width}: VideoPlayerProps): JSX.Element {
   const [isPlaying, setIsPlaying] = useState(autoPlay);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
     if (videoRef.current !== null) {
-      videoRef.current.onloadeddata = () => setIsLoading(false);
+      muted ? videoRef.current.muted = true : videoRef.current.muted = false;
     }
 
     return () => {
@@ -27,7 +25,7 @@ function VideoPlayer({previewImage, src, autoPlay, muted, isActive}: VideoPlayer
         videoRef.current = null;
       }
     };
-  }, [src]);
+  }, [muted, src]);
 
   useEffect(() => {
     if (videoRef.current === null) {
@@ -35,32 +33,19 @@ function VideoPlayer({previewImage, src, autoPlay, muted, isActive}: VideoPlayer
     }
 
     if (isPlaying) {
-      setTimeout(() => {
-        if (videoRef.current !== null) {
-          videoRef.current.play();
-        }
-      }, VIDEO_TIMEOUT);
-
+      videoRef.current.play();
       return;
     }
-
     videoRef.current.load();
 
-  }, [isPlaying]);
+  });
 
   useEffect(() => {
     isActive ? setIsPlaying(true) : setIsPlaying(false);
   }, [isActive]);
 
-  useEffect(() => {
-    if (videoRef.current !== null) {
-      muted ? videoRef.current.muted = true : videoRef.current.muted = false;
-    }
-
-  }, [muted]);
-
   return (
-    <video src={src} ref={videoRef} poster={previewImage} />
+    <video src={src} ref={videoRef} poster={previewImage} width={width}/>
   );
 }
 
