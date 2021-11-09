@@ -37,7 +37,6 @@ function VideoPlayer({previewImage, src, autoPlay, muted, isActive, width}: Vide
       return;
     }
     videoRef.current.load();
-
   });
 
   useEffect(() => {

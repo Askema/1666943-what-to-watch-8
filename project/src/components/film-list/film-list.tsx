@@ -19,7 +19,7 @@ function FilmList({films}: FilmListProps): JSX.Element {
           film={film}
         />
       ),
-      )};
+      )}
     </div>
   );
 }
