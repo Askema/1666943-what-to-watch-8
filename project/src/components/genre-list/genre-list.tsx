@@ -46,7 +46,7 @@ function GenreList({genre, onChangeGenre, onUpdateFilmList}: ConnectedComponentP
           <li key={keyValue} className={`catalog__genres-item ${genre === item ? 'catalog__genres-item--active' : ''} `}
             onClick={() => {
               onChangeGenre(item);
-              onUpdateFilmList(getFilmsByGenre(item));
+              onUpdateFilmList(getFilmsByGenre(item, initialFilmList));
             }}
           >
             <Link to={AppRoute.Main} className="catalog__genres-link">{item}</Link>

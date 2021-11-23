@@ -1,19 +1,20 @@
 import { Link } from 'react-router-dom';
 import { Film } from '../../types/film';
 import { MouseEvent, Dispatch, SetStateAction } from 'react';
-import { useHistory } from 'react-router';
 import VideoPlayer from '../video-player/video-player';
 import { useState, useEffect } from 'react';
 import { Actions } from '../../types/action';
 import { updateFilmList } from '../../store/action';
 import { connect, ConnectedProps } from 'react-redux';
 import { getSimilarFilms } from '../../utils/film';
+import { Links }from '../../constants/const';
 
 
 type FilmCardProps = {
   film: Film;
   isActive: boolean;
   setActiveCardId: Dispatch<SetStateAction<number | null>>;
+  films: Film[];
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
@@ -27,7 +28,7 @@ const connector = connect(null, mapDispatchToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 type ConnectedComponentProps = PropsFromRedux & FilmCardProps;
 
-function FilmCard({ film, isActive, setActiveCardId, onUpdateFilmList }: ConnectedComponentProps): JSX.Element {
+function FilmCard({ films, film, isActive, setActiveCardId, onUpdateFilmList }: ConnectedComponentProps): JSX.Element {
   const [isPlaying, setIsPlaying] = useState(false);
   useEffect(() => {
     if (!isActive) {
@@ -44,11 +45,8 @@ function FilmCard({ film, isActive, setActiveCardId, onUpdateFilmList }: Connect
     };
   }, [isPlaying, isActive]);
 
-  const history = useHistory();
-
   const filmCardOnClick = () => {
-    history.push(`/films/${film.id}`);
-    onUpdateFilmList(getSimilarFilms(film));
+    onUpdateFilmList(getSimilarFilms(film, films));
   };
 
   return (
@@ -61,18 +59,20 @@ function FilmCard({ film, isActive, setActiveCardId, onUpdateFilmList }: Connect
       }}
       onClick={filmCardOnClick}
     >
-      <div className="small-film-card__image">
-        <VideoPlayer
-          src={film.previewVideoLink}
-          previewImage={film.previewImage}
-          autoPlay={false}
-          muted
-          isActive={isPlaying}
-          width='280'
-        />
-      </div>
+      <Link to={Links.OverviewFilmById(film.id)}>
+        <div className="small-film-card__image">
+          <VideoPlayer
+            src={film.previewVideoLink}
+            previewImage={film.previewImage}
+            autoPlay={false}
+            muted
+            isActive={isPlaying}
+            width='280'
+          />
+        </div>
+      </Link>
       <h3 className="small-film-card__title">
-        <Link to={`/films/${film.id}`} className="small-film-card__link">{film.name}</Link>
+        <Link to={Links.OverviewFilmById(film.id)} className="small-film-card__link">{film.name}</Link>
       </h3>
     </article>
   );

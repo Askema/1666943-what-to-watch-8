@@ -27,6 +27,7 @@ function FilmList({films}: FilmListProps): JSX.Element {
           isActive={film.id === activeCardId}
           key={film.id}
           film={film}
+          films={films}
           onUpdateFilmList={updateFilmList}
         />
       ),

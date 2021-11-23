@@ -50,6 +50,7 @@ function MyListPage({films}: MyListPageProps): JSX.Element {
               key={film.id}
               film={film}
               onUpdateFilmList={updateFilmList}
+              films={films}
             />
           ),
           )};
