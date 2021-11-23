@@ -1,9 +1,14 @@
-import {Link} from 'react-router-dom';
-import {Film} from '../../types/film';
-import {MouseEvent, Dispatch, SetStateAction} from 'react';
-import {useHistory} from 'react-router';
+import { Link } from 'react-router-dom';
+import { Film } from '../../types/film';
+import { MouseEvent, Dispatch, SetStateAction } from 'react';
+import { useHistory } from 'react-router';
 import VideoPlayer from '../video-player/video-player';
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
+import { Actions } from '../../types/action';
+import { updateFilmList } from '../../store/action';
+import { connect, ConnectedProps } from 'react-redux';
+import { getSimilarFilms } from '../../utils/film';
+
 
 type FilmCardProps = {
   film: Film;
@@ -11,7 +16,18 @@ type FilmCardProps = {
   setActiveCardId: Dispatch<SetStateAction<number | null>>;
 }
 
-function FilmCard({film, isActive, setActiveCardId}: FilmCardProps): JSX.Element {
+const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
+  onUpdateFilmList(films: Film[]) {
+    dispatch(updateFilmList(films));
+  },
+});
+
+const connector = connect(null, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+type ConnectedComponentProps = PropsFromRedux & FilmCardProps;
+
+function FilmCard({ film, isActive, setActiveCardId, onUpdateFilmList }: ConnectedComponentProps): JSX.Element {
   const [isPlaying, setIsPlaying] = useState(false);
   useEffect(() => {
     if (!isActive) {
@@ -29,15 +45,21 @@ function FilmCard({film, isActive, setActiveCardId}: FilmCardProps): JSX.Element
   }, [isPlaying, isActive]);
 
   const history = useHistory();
+
+  const filmCardOnClick = () => {
+    history.push(`/films/${film.id}`);
+    onUpdateFilmList(getSimilarFilms(film));
+  };
+
   return (
     <article className="small-film-card catalog__films-card"
-      onMouseEnter={({target}: MouseEvent<HTMLElement>) => {
+      onMouseEnter={({ target }: MouseEvent<HTMLElement>) => {
         setActiveCardId(film.id);
       }}
-      onMouseLeave={({target}: MouseEvent<HTMLElement>) => {
+      onMouseLeave={({ target }: MouseEvent<HTMLElement>) => {
         setActiveCardId(null);
       }}
-      onClick={() => history.push(`/films/${film.id}`)}
+      onClick={filmCardOnClick}
     >
       <div className="small-film-card__image">
         <VideoPlayer

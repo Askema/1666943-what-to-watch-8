@@ -3,6 +3,7 @@ import FilmCard from '../film-card/film-card';
 import {Link} from 'react-router-dom';
 import { AppRoute } from '../../constants/const';
 import {useState} from 'react';
+import { updateFilmList } from '../../store/action';
 
 type MyListPageProps = {
   films: Film[];
@@ -48,6 +49,7 @@ function MyListPage({films}: MyListPageProps): JSX.Element {
               isActive={film.id === activeCardId}
               key={film.id}
               film={film}
+              onUpdateFilmList={updateFilmList}
             />
           ),
           )};

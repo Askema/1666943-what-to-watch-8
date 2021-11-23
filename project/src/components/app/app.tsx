@@ -32,7 +32,7 @@ function App({promo, films}: AppProps): JSX.Element {
           exact
           path={AppRoute.MyList}
           render={() => <MyList films={films}/>}
-          authorizationStatus={AuthorizationStatus.Auth}
+          authorizationStatus={AuthorizationStatus.NoAuth}
         >
         </PrivateRoute>
         <Route exact path={AppRoute.Film}>
