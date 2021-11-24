@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router';
-import { AppRoute } from '../../constants/const';
+import { AppRoute, FILMS_PER_PAGE_COUNT } from '../../constants/const';
 import { Film } from '../../types/film';
 import FilmList from '../film-list/film-list';
 import { Promo } from '../../types/promo';
 import GenreList from '../genre-list/genre-list';
+import ShowMore from '../show-more/show-more';
 
 type MainProps = {
   promo: Promo;
@@ -84,11 +85,10 @@ function MainPage({ promo, films }: MainProps): JSX.Element {
 
           <FilmList
             films={films}
+            filmsPerPageCount={FILMS_PER_PAGE_COUNT}
           />
+          <ShowMore />
 
-          <div className="catalog__more">
-            <button className="catalog__button" type="button">Show more</button>
-          </div>
         </section>
 
         <footer className="page-footer">

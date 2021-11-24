@@ -8,6 +8,7 @@ import {Actions} from '../../types/action';
 import {changeGenre, updateFilmList} from '../../store/action';
 import {getFilmsByGenre} from '../../utils/film';
 import {films as initialFilmList} from '../../mocks/films';
+import {resetFilmsPerPage} from '../../store/action';
 
 type GenreListProps = {
   genre: string;
@@ -25,6 +26,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
   onUpdateFilmList(films: Film[]) {
     dispatch(updateFilmList(films));
   },
+  onResetFilmsPerPage() {
+    dispatch(resetFilmsPerPage());
+  },
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -32,7 +36,7 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 type ConnectedComponentProps = PropsFromRedux & GenreListProps;
 
-function GenreList({genre, onChangeGenre, onUpdateFilmList}: ConnectedComponentProps): JSX.Element {
+function GenreList({genre, onChangeGenre, onUpdateFilmList, onResetFilmsPerPage}: ConnectedComponentProps): JSX.Element {
 
   const genresFromFilms = (allFilms: Film[]): string[] => [...new Set(allFilms.map((film) => film.genre))];
   const genresList = [ALL_GENRES, ...genresFromFilms(initialFilmList)];
@@ -47,6 +51,7 @@ function GenreList({genre, onChangeGenre, onUpdateFilmList}: ConnectedComponentP
             onClick={() => {
               onChangeGenre(item);
               onUpdateFilmList(getFilmsByGenre(item, initialFilmList));
+              onResetFilmsPerPage();
             }}
           >
             <Link to={AppRoute.Main} className="catalog__genres-link">{item}</Link>

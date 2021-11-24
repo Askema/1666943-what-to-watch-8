@@ -1,4 +1,4 @@
-import { AppRoute } from '../../constants/const';
+import { AppRoute, FILMS_PER_PAGE_COUNT } from '../../constants/const';
 import { Film } from '../../types/film';
 import { useParams, useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -92,7 +92,10 @@ function FilmPage({ films }: FilmPageProps): JSX.Element {
           <section className="catalog catalog--like-this">
             <h2 className="catalog__title">More like this</h2>
 
-            <FilmList films={getSimilarFilms(film, films)}/>
+            <FilmList
+              films={getSimilarFilms(film, films)}
+              filmsPerPageCount={FILMS_PER_PAGE_COUNT}
+            />
           </section>
 
           <footer className="page-footer">

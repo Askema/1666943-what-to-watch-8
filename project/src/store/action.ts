@@ -10,3 +10,11 @@ export const updateFilmList = (films: Film[]): UpdateFilmListAction => ({
   type: ActionType.UpdateFilmList,
   payload: films,
 });
+
+export const showMoreFilms = () => ({
+  type: ActionType.ShowMoreFilms,
+} as const);
+
+export const resetFilmsPerPage = () => ({
+  type: ActionType.ResetFilmsPerPage,
+} as const);
