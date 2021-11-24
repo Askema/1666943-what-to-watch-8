@@ -1,18 +1,54 @@
-import { AppRoute } from '../../constants/const';
-import {Film} from '../../types/film';
-import {useParams, useHistory} from 'react-router';
-import {Link} from 'react-router-dom';
+import { APIRouteById, AuthorizationStatus, Links } from '../../constants/const';
+import { Link } from 'react-router-dom';
 import NotFoundPage from '../not-found-page/NotFoundPage';
+import Tabs from '../tabs/tabs';
+import FilmList from '../film-list/film-list';
+import Logo from '../logo/logo';
+import { connect, ConnectedProps } from 'react-redux';
+import { State } from '../../types/state';
+import { useParams } from 'react-router';
+import { fetchCurrentFilmAction } from '../../store/api-actions';
+import { ThunkAppDispatch } from '../../types/action';
+import UserBlock from '../user-block/user-block';
+import { Films, FilmsFromServer } from '../../types/film';
+import { useEffect, useState } from 'react';
+import api from '../../services/api';
+import { adaptFilmsToClient } from '../../utils/adapter/adapter';
+import {getAuthorizationStatus} from '../../store/user-process/selectors';
+import {getCurrentFilm} from '../../store/film-data/selectors';
+import {getFilmsPerPageCount} from '../../store/film-search/selectors';
 
-type FilmPageProps = {
-  films: Film[];
-}
+const SIMILAR_FILMS_COUNT = 4;
 
-function FilmPage({films}: FilmPageProps): JSX.Element {
-  const {id} = useParams<{id: string}>();
-  const history = useHistory();
-  const film: Film | undefined = films.find((element) => element.id === Number(id));
 
+const mapStateToProps = (state: State) => ({
+  filmsPerPageCount: getFilmsPerPageCount(state),
+  film: getCurrentFilm(state),
+  authorizationStatus: getAuthorizationStatus(state),
+});
+
+const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
+  fetchCurrentFilm(id: number) {
+    dispatch(fetchCurrentFilmAction(id));
+  },
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+function FilmPage({ film, filmsPerPageCount, fetchCurrentFilm, authorizationStatus }: PropsFromRedux): JSX.Element {
+  const { id } = useParams<{ id: string }>();
+
+
+  const [appState, setAppState] = useState<Films>([]);
+
+  useEffect(() => {
+    api.get<FilmsFromServer>(APIRouteById.SimilarFilmsById(Number(id))).then((response) => setAppState(adaptFilmsToClient(response.data)));
+    fetchCurrentFilm(Number(id));
+  }, [fetchCurrentFilm, id, setAppState]);
+
+  const similarFilms = appState.slice(0, SIMILAR_FILMS_COUNT);
 
   if (film) {
     return (
@@ -27,25 +63,10 @@ function FilmPage({films}: FilmPageProps): JSX.Element {
 
             <header className="page-header film-card__head">
               <div className="logo">
-                <a href="main.html" className="logo__link">
-                  <span className="logo__letter logo__letter--1">W</span>
-                  <span className="logo__letter logo__letter--2">T</span>
-                  <span className="logo__letter logo__letter--3">W</span>
-                </a>
+                <Logo />
               </div>
 
-              <ul className="user-block">
-                <li className="user-block__item">
-                  <div className="user-block__avatar"
-                    onClick={() => history.push(AppRoute.MyList)}
-                  >
-                    <img src="img/avatar.jpg" alt="User avatar" width="63" height="63" />
-                  </div>
-                </li>
-                <li className="user-block__item">
-                  <Link to={AppRoute.SignIn} className="user-block__link">Sign out</Link>
-                </li>
-              </ul>
+              <UserBlock />
             </header>
 
             <div className="film-card__wrap">
@@ -69,7 +90,9 @@ function FilmPage({films}: FilmPageProps): JSX.Element {
                     </svg>
                     <span>My list</span>
                   </button>
-                  <Link to={`/films/${id}/review`} className="btn film-card__button">Add review</Link>
+                  {authorizationStatus === AuthorizationStatus.Auth ?
+                    <Link to={Links.AddReviewByFilmId(film.id)} className="btn film-card__button">Add review</Link>
+                    : ''}
                 </div>
               </div>
             </div>
@@ -81,39 +104,8 @@ function FilmPage({films}: FilmPageProps): JSX.Element {
                 <img src={film.posterImage} alt={`${film.name} poster`} width="218" height="327" />
               </div>
 
-              <div className="film-card__desc">
-                <nav className="film-nav film-card__nav">
-                  <ul className="film-nav__list">
-                    <li className="film-nav__item film-nav__item--active">
-                      <a href="/" className="film-nav__link">Overview</a>
-                    </li>
-                    <li className="film-nav__item">
-                      <a href="/" className="film-nav__link">Details</a>
-                    </li>
-                    <li className="film-nav__item">
-                      <a href="/" className="film-nav__link">Reviews</a>
-                    </li>
-                  </ul>
-                </nav>
+              <Tabs film={film} />
 
-                <div className="film-rating">
-                  <div className="film-rating__score">{film.rating}</div>
-                  <p className="film-rating__meta">
-                    <span className="film-rating__level">Very good</span>
-                    <span className="film-rating__count">240 ratings</span>
-                  </p>
-                </div>
-
-                <div className="film-card__text">
-                  <p>In the 1930s, the Grand Budapest Hotel is a popular European ski resort, presided over by concierge Gustave H. (Ralph Fiennes). Zero, a junior lobby boy, becomes Gustave&apos;s friend and protege.</p>
-
-                  <p>Gustave prides himself on providing first-className service to the hotel&apos;s guests, including satisfying the sexual needs of the many elderly women who stay there. When one of Gustave&apos;s lovers dies mysteriously, Gustave finds himself the recipient of a priceless painting and the chief suspect in her murder.</p>
-
-                  <p className="film-card__director"><strong>Director: Wes Anderson</strong></p>
-
-                  <p className="film-card__starring"><strong>Starring: Bill Murray, Edward Norton, Jude Law, Willem Dafoe and other</strong></p>
-                </div>
-              </div>
             </div>
           </div>
         </section>
@@ -121,43 +113,7 @@ function FilmPage({films}: FilmPageProps): JSX.Element {
           <section className="catalog catalog--like-this">
             <h2 className="catalog__title">More like this</h2>
 
-            <div className="catalog__films-list">
-              <article className="small-film-card catalog__films-card">
-                <div className="small-film-card__image">
-                  <img src="img/fantastic-beasts-the-crimes-of-grindelwald.jpg" alt="Fantastic Beasts: The Crimes of Grindelwald" width="280" height="175" />
-                </div>
-                <h3 className="small-film-card__title">
-                  <a className="small-film-card__link" href="film-page.html">Fantastic Beasts: The Crimes of Grindelwald</a>
-                </h3>
-              </article>
-
-              <article className="small-film-card catalog__films-card">
-                <div className="small-film-card__image">
-                  <img src="img/bohemian-rhapsody.jpg" alt="Bohemian Rhapsody" width="280" height="175" />
-                </div>
-                <h3 className="small-film-card__title">
-                  <a className="small-film-card__link" href="film-page.html">Bohemian Rhapsody</a>
-                </h3>
-              </article>
-
-              <article className="small-film-card catalog__films-card">
-                <div className="small-film-card__image">
-                  <img src="img/macbeth.jpg" alt="Macbeth" width="280" height="175" />
-                </div>
-                <h3 className="small-film-card__title">
-                  <a className="small-film-card__link" href="film-page.html">Macbeth</a>
-                </h3>
-              </article>
-
-              <article className="small-film-card catalog__films-card">
-                <div className="small-film-card__image">
-                  <img src="img/aviator.jpg" alt="Aviator" width="280" height="175" />
-                </div>
-                <h3 className="small-film-card__title">
-                  <a className="small-film-card__link" href="film-page.html">Aviator</a>
-                </h3>
-              </article>
-            </div>
+            <FilmList films={similarFilms} filmsPerPageCount={filmsPerPageCount} />
           </section>
 
           <footer className="page-footer">
@@ -183,4 +139,5 @@ function FilmPage({films}: FilmPageProps): JSX.Element {
   }
 }
 
-export default FilmPage;
+export { FilmPage };
+export default connector(FilmPage);

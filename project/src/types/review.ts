@@ -8,3 +8,8 @@ export type Review = {
   comment: string,
   date: string,
 }
+
+export type CommentPost = {
+  rating: number,
+  comment: string,
+}

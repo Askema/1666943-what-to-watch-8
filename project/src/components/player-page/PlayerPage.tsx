@@ -1,60 +1,121 @@
-import {useParams} from 'react-router';
-import {Link} from 'react-router-dom';
+import {AppRoute, Links, PROMO_ID} from '../../constants/const';
+import {ConnectedProps, connect} from 'react-redux';
+import {getCurrentFilm, getPromo} from '../../store/film-data/selectors';
+import {getCurrentPlayerTime, getVideoDuration} from '../../store/film-search/selectors';
+import {getElapsedTime, getPlayerProgress} from '../../utils/adapter/film';
+import {useEffect, useState} from 'react';
+
 import {Film} from '../../types/film';
+import {Link} from 'react-router-dom';
 import NotFoundPage from '../not-found-page/NotFoundPage';
+import {State} from '../../types/state';
+import {ThunkAppDispatch} from '../../types/action';
+import VideoPlayer from '../video-player/video-player';
+import {fetchCurrentFilmAction} from '../../store/api-actions';
+import {useParams} from 'react-router';
 
-type PlayerPageProps = {
-  films: Film[];
-}
+const mapStateToProps = (state: State) => ({
+  film: getCurrentFilm(state),
+  currentPlayerTime: getCurrentPlayerTime(state),
+  videoDuration: getVideoDuration(state),
+  promo: getPromo(state),
+});
 
-function PlayerPage({films}: PlayerPageProps): JSX.Element {
-  const playerStyle = {
-    left: '30%',
+const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
+  fetchCurrentFilm(id: number) {
+    dispatch(fetchCurrentFilmAction(id));
+  },
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+function PlayerScreen(props: PropsFromRedux): JSX.Element {
+  const {film, promo, currentPlayerTime, videoDuration, fetchCurrentFilm} = props;
+  const {id} = useParams<{id: string}>();
+
+  const [isActive, setIsActive] = useState(true);
+  const [isFullScreen, setIsFullScreen] = useState(false);
+
+  let currentFilm: Film | undefined;
+
+  id === PROMO_ID ? currentFilm = promo : currentFilm = film;
+
+  useEffect(() => {
+    if (id !== PROMO_ID) {
+      fetchCurrentFilm(Number(id));
+    }
+  }, [fetchCurrentFilm, id]);
+
+  const onPlayClick = () => {
+    setIsActive(!isActive);
   };
 
-  const {id} = useParams<{id: string}>();
-  const film: Film | undefined = films.find((element) => element.id === Number(id));
+  const onFullScreenClick = () => {
+    setIsFullScreen(!isFullScreen);
+  };
 
-  if (film !== undefined) {
-    return (
-      <div className="player">
-        <video src={film.videoLink} className="player__video" poster={film.posterImage}></video>
+  const playerStyle = {
+    left: getPlayerProgress(currentPlayerTime, videoDuration),
+  };
 
-        <Link to={`/films/${film.id}`} type="button" className="player__exit">Exit</Link>
+  if (!currentFilm) {
+    return <NotFoundPage />;
+  }
 
-        <div className="player__controls">
-          <div className="player__controls-row">
-            <div className="player__time">
-              <progress className="player__progress" value="30" max="100"></progress>
-              <div className="player__toggler" style={playerStyle}>Toggler</div>
-            </div>
-            <div className="player__time-value">1:30:29</div>
+  return (
+    <div className="player">
+
+      <VideoPlayer previewImage={currentFilm.posterImage} src={currentFilm.videoLink} muted={false} isActive={isActive} autoPlay width="100%"/>
+
+      <Link to={id === PROMO_ID ? AppRoute.Main : Links.OverviewFilmById(currentFilm.id)} type="button" className="player__exit">Exit</Link>
+
+      <div className="player__controls">
+        <div className="player__controls-row">
+          <div className="player__time">
+            <progress className="player__progress" value={getPlayerProgress(currentPlayerTime, videoDuration)} max="100"></progress>
+            <div className="player__toggler" style={playerStyle}>Toggler</div>
           </div>
+          <div className="player__time-value">{getElapsedTime(currentPlayerTime, videoDuration)}</div>
+        </div>
 
-          <div className="player__controls-row">
-            <button type="button" className="player__play">
-              <svg viewBox="0 0 19 19" width="19" height="19">
-                <use xlinkHref="#play-s"></use>
-              </svg>
-              <span>Play</span>
-            </button>
-            <div className="player__name">{film.name}</div>
+        <div className="player__controls-row">
+          <button
+            type="button"
+            className="player__play"
+            onClick={() => {
+              onPlayClick();
+            }}
+          >
+            <svg viewBox="0 0 19 19" width="19" height="19">
+              <use
+                xlinkHref={isActive ? '#pause' : '#play-s'}
+              >
+              </use>
+            </svg>
+            <span>Play</span>
+          </button>
+          <div className="player__name">{currentFilm.name}</div>
 
-            <button type="button" className="player__full-screen">
-              <svg viewBox="0 0 27 27" width="27" height="27">
-                <use xlinkHref="#full-screen"></use>
-              </svg>
-              <span>Full screen</span>
-            </button>
-          </div>
+          <button
+            type="button"
+            className="player__full-screen"
+            onClick={() => {
+              onFullScreenClick();
+            }}
+          >
+            <svg viewBox="0 0 27 27" width="27" height="27">
+              <use xlinkHref="#full-screen"></use>
+            </svg>
+            <span>Full screen</span>
+          </button>
         </div>
       </div>
-    );
-  } else {
-    return (
-      <NotFoundPage />
-    );
-  }
+    </div>
+  );
+
 }
 
-export default PlayerPage;
+export {PlayerScreen};
+export default connector(PlayerScreen);

@@ -1,143 +1,115 @@
-import {Link} from 'react-router-dom';
-import {useHistory} from 'react-router';
-import { AppRoute } from '../../constants/const';
-import { Film } from '../../types/film';
+import { APIRoute } from '../../constants/const';
 import FilmList from '../film-list/film-list';
 import { Promo } from '../../types/promo';
+import GenreList from '../genre-list/genre-list';
+import ShowMore from '../show-more/show-more';
+import Logo from '../logo/logo';
+import { State } from '../../types/state';
+import { connect, ConnectedProps } from 'react-redux';
+import { getFilmsByGenre } from '../../utils/adapter/film';
+import api from '../../services/api';
+import { useEffect, useState } from 'react';
+import { adaptPromoToClient } from '../../utils/adapter/promo';
+import { FilmFromServer } from '../../types/film';
+import NotFoundPage from '../not-found-page/NotFoundPage';
+import UserBlock from '../user-block/user-block';
+import {getFilmsPerPageCount, getGenre} from '../../store/film-search/selectors';
+import {getFilms} from '../../store/film-data/selectors';
 
-type MainProps = {
-  promo: Promo;
-  films: Film[];
-}
+const mapStateToProps = (state: State) => ({
+  genre: getGenre(state),
+  films: getFilms(state),
+  filmsPerPageCount: getFilmsPerPageCount(state),
+});
 
-function MainPage({promo, films}: MainProps): JSX.Element {
-  const history = useHistory();
+const connector = connect(mapStateToProps);
 
-  return (
-    <>
-      <section className="film-card">
-        <div className="film-card__bg">
-          <img src={promo.previewImage} alt={promo.name} />
-        </div>
+type PropsFromRedux = ConnectedProps<typeof connector>;
 
-        <h1 className="visually-hidden">WTW</h1>
+function MainScreen(props: PropsFromRedux): JSX.Element {
+  const { genre, films, filmsPerPageCount } = props;
+  const [appState, setAppState] = useState<Promo>();
 
-        <header className="page-header film-card__head">
-          <div className="logo">
-            <a className="logo__link" href="/">
-              <span className="logo__letter logo__letter--1">W</span>
-              <span className="logo__letter logo__letter--2">T</span>
-              <span className="logo__letter logo__letter--3">W</span>
-            </a>
+  useEffect(() => {
+    api.get<FilmFromServer>(APIRoute.Promo).then((response) => setAppState(adaptPromoToClient(response.data)));
+  }, [setAppState]);
+  const promo = appState;
+
+  if (promo === undefined) {
+    return <NotFoundPage />;
+  } else {
+
+    return (
+      <>
+        <section className="film-card">
+          <div className="film-card__bg">
+            <img src={promo.previewImage} alt={promo.name} />
           </div>
 
-          <ul className="user-block">
-            <li className="user-block__item">
-              <div className="user-block__avatar"
-                onClick={() => history.push(AppRoute.MyList)}
-              >
-                <img src="img/avatar.jpg" alt="User avatar" width="63" height="63" />
-              </div>
-            </li>
-            <li className="user-block__item">
-              <Link to={AppRoute.SignIn} className="user-block__link"> Sign out</Link>
-            </li>
-          </ul>
-        </header>
+          <h1 className="visually-hidden">WTW</h1>
 
-        <div className="film-card__wrap">
-          <div className="film-card__info">
-            <div className="film-card__poster">
-              <img src={promo.posterImage} alt={`${promo.name} poster`} width="218" height="327" />
+          <header className="page-header film-card__head">
+            <div className="logo">
+              <Logo />
             </div>
 
-            <div className="film-card__desc">
-              <h2 className="film-card__title">{promo.name}</h2>
-              <p className="film-card__meta">
-                <span className="film-card__genre">{promo.genre}</span>
-                <span className="film-card__year">{promo.released}</span>
-              </p>
+            <UserBlock />
+          </header>
 
-              <div className="film-card__buttons">
-                <button className="btn btn--play film-card__button" type="button">
-                  <svg viewBox="0 0 19 19" width="19" height="19">
-                    <use xlinkHref="#play-s"></use>
-                  </svg>
-                  <span>Play</span>
-                </button>
-                <button className="btn btn--list film-card__button" type="button">
-                  <svg viewBox="0 0 19 20" width="19" height="20">
-                    <use xlinkHref="#add"></use>
-                  </svg>
-                  <span>My list</span>
-                </button>
+          <div className="film-card__wrap">
+            <div className="film-card__info">
+              <div className="film-card__poster">
+                <img src={promo.posterImage} alt={`${promo.name} poster`} width="218" height="327" />
+              </div>
+
+              <div className="film-card__desc">
+                <h2 className="film-card__title">{promo.name}</h2>
+                <p className="film-card__meta">
+                  <span className="film-card__genre">{promo.genre}</span>
+                  <span className="film-card__year">{promo.released}</span>
+                </p>
+
+                <div className="film-card__buttons">
+                  <button className="btn btn--play film-card__button" type="button">
+                    <svg viewBox="0 0 19 19" width="19" height="19">
+                      <use xlinkHref="#play-s"></use>
+                    </svg>
+                    <span>Play</span>
+                  </button>
+                  <button className="btn btn--list film-card__button" type="button">
+                    <svg viewBox="0 0 19 20" width="19" height="20">
+                      <use xlinkHref="#add"></use>
+                    </svg>
+                    <span>My list</span>
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-      <div className="page-content">
-        <section className="catalog">
-          <h2 className="catalog__title visually-hidden">Catalog</h2>
-
-          <ul className="catalog__genres-list">
-            <li className="catalog__genres-item catalog__genres-item--active">
-              <a href="/" className="catalog__genres-link">All genres</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/" className="catalog__genres-link">Comedies</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/" className="catalog__genres-link">Crime</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/" className="catalog__genres-link">Documentary</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/" className="catalog__genres-link">Dramas</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/" className="catalog__genres-link">Horror</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/" className="catalog__genres-link">Kids & Family</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/" className="catalog__genres-link">Romance</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/" className="catalog__genres-link">Sci-Fi</a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="/" className="catalog__genres-link">Thrillers</a>
-            </li>
-          </ul>
-
-          <FilmList
-            films={films}
-          />
-
-          <div className="catalog__more">
-            <button className="catalog__button" type="button">Show more</button>
           </div>
         </section>
+        <div className="page-content">
+          <section className="catalog">
+            <h2 className="catalog__title visually-hidden">Catalog</h2>
+            <GenreList />
+            <FilmList films={getFilmsByGenre(genre, films)} filmsPerPageCount={filmsPerPageCount} />
+            <ShowMore />
 
-        <footer className="page-footer">
-          <div className="logo">
-            <a className="logo__link logo__link--light" href="/">
-              <span className="logo__letter logo__letter--1">W</span>
-              <span className="logo__letter logo__letter--2">T</span>
-              <span className="logo__letter logo__letter--3">W</span>
-            </a>
-          </div>
+          </section>
 
-          <div className="copyright">
-            <p>© 2019 What to watch Ltd.</p>
-          </div>
-        </footer>
-      </div>
-    </>
-  );
+          <footer className="page-footer">
+            <div className="logo">
+              <Logo />
+            </div>
+
+            <div className="copyright">
+              <p>© 2019 What to watch Ltd.</p>
+            </div>
+          </footer>
+        </div>
+      </>
+    );
+  }
 }
 
-export default MainPage;
+export { MainScreen };
+export default connector(MainScreen);

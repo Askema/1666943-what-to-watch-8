@@ -1,19 +1,33 @@
-import {Film} from '../../types/film';
-import {useParams, useHistory} from 'react-router';
-import NotFoundPage from '../not-found-page/NotFoundPage';
-import {Link} from 'react-router-dom';
-import { AppRoute } from '../../constants/const';
+import { Links } from '../../constants/const';
 import AddReviewForm from '../add-review-form/add-review-form';
+import NotFoundPage from '../not-found-page/NotFoundPage';
+import { ConnectedProps, connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import Logo from '../logo/logo';
+import { State } from '../../types/state';
+import { ThunkAppDispatch } from '../../types/action';
+import { fetchCurrentFilmAction } from '../../store/api-actions';
+import { useParams } from 'react-router';
+import UserBlock from '../user-block/user-block';
+import { getCurrentFilm } from '../../store/film-data/selectors';
 
-type AddReviewPageProps = {
-  films: Film[];
-}
+const mapStateToProps = (state: State) => ({
+  film: getCurrentFilm(state),
+});
 
-function AddReviewPage(props: AddReviewPageProps): JSX.Element {
-  const {films} = props;
-  const {id} = useParams<{id: string}>();
-  const film: Film | undefined = films.find((element) => element.id === Number(id));
-  const history = useHistory();
+const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
+  fetchCurrentFilm(id: number) {
+    dispatch(fetchCurrentFilmAction(id));
+  },
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+function AddReviewPage({ film, fetchCurrentFilm }: PropsFromRedux): JSX.Element {
+  const { id } = useParams<{ id: string }>();
+  fetchCurrentFilm(Number(id));
 
   if (film) {
     return (
@@ -27,17 +41,13 @@ function AddReviewPage(props: AddReviewPageProps): JSX.Element {
 
           <header className="page-header">
             <div className="logo">
-              <a href="main.html" className="logo__link">
-                <span className="logo__letter logo__letter--1">W</span>
-                <span className="logo__letter logo__letter--2">T</span>
-                <span className="logo__letter logo__letter--3">W</span>
-              </a>
+              <Logo />
             </div>
 
             <nav className="breadcrumbs">
               <ul className="breadcrumbs__list">
                 <li className="breadcrumbs__item">
-                  <a href="film-page.html" className="breadcrumbs__link">{film.name}</a>
+                  <Link to={Links.OverviewFilmById(film.id)} className="breadcrumbs__link">{film.name}</Link>
                 </li>
                 <li className="breadcrumbs__item">
                   <a className="breadcrumbs__link" href="/">Add review</a>
@@ -45,18 +55,7 @@ function AddReviewPage(props: AddReviewPageProps): JSX.Element {
               </ul>
             </nav>
 
-            <ul className="user-block">
-              <li className="user-block__item">
-                <div className="user-block__avatar"
-                  onClick={() => history.push(AppRoute.MyList)}
-                >
-                  <img src="img/avatar.jpg" alt="User avatar" width="63" height="63" />
-                </div>
-              </li>
-              <li className="user-block__item">
-                <Link to={AppRoute.SignIn} className="user-block__link">Sign out</Link>
-              </li>
-            </ul>
+            <UserBlock />
           </header>
 
           <div className="film-card__poster film-card__poster--small">
@@ -75,4 +74,6 @@ function AddReviewPage(props: AddReviewPageProps): JSX.Element {
   );
 }
 
-export default AddReviewPage;
+export { AddReviewPage };
+export default connector(AddReviewPage);
+
