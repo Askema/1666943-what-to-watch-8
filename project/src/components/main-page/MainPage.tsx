@@ -6,6 +6,7 @@ import FilmList from '../film-list/film-list';
 import { Promo } from '../../types/promo';
 import GenreList from '../genre-list/genre-list';
 import ShowMore from '../show-more/show-more';
+import Logo from '../logo/logo';
 
 type MainProps = {
   promo: Promo;
@@ -26,11 +27,7 @@ function MainPage({ promo, films }: MainProps): JSX.Element {
 
         <header className="page-header film-card__head">
           <div className="logo">
-            <a className="logo__link" href="/">
-              <span className="logo__letter logo__letter--1">W</span>
-              <span className="logo__letter logo__letter--2">T</span>
-              <span className="logo__letter logo__letter--3">W</span>
-            </a>
+            <Logo/>
           </div>
 
           <ul className="user-block">
@@ -93,11 +90,7 @@ function MainPage({ promo, films }: MainProps): JSX.Element {
 
         <footer className="page-footer">
           <div className="logo">
-            <a className="logo__link logo__link--light" href="/">
-              <span className="logo__letter logo__letter--1">W</span>
-              <span className="logo__letter logo__letter--2">T</span>
-              <span className="logo__letter logo__letter--3">W</span>
-            </a>
+            <Logo/>
           </div>
 
           <div className="copyright">

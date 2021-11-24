@@ -13,8 +13,12 @@ const reducer = (state: State = initialState, action: Actions): State => {
   switch (action.type) {
     case ActionType.ChangeGenre:
       return { ...state, genre: action.payload };
+    case ActionType.ResetGenre:
+      return { ...state, genre: ALL_GENRES };
     case ActionType.UpdateFilmList:
       return { ...state, films: action.payload };
+    case ActionType.ResetFilmList:
+      return { ...state, films: films };
     case ActionType.ShowMoreFilms:
       return { ...state, filmsPerPageCount: state.filmsPerPageCount + FILMS_PER_PAGE_COUNT };
     case ActionType.ResetFilmsPerPage:

@@ -6,10 +6,18 @@ export const changeGenre = (genre: string): ChangeGenreAction => ({
   payload: genre,
 });
 
+export const resetGenre = () => ({
+  type: ActionType.ResetGenre,
+} as const);
+
 export const updateFilmList = (films: Film[]): UpdateFilmListAction => ({
   type: ActionType.UpdateFilmList,
   payload: films,
 });
+
+export const resetFilmList = () => ({
+  type: ActionType.ResetFilmList,
+} as const);
 
 export const showMoreFilms = () => ({
   type: ActionType.ShowMoreFilms,

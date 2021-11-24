@@ -1,9 +1,10 @@
 import {Film} from './film';
-import {changeGenre, updateFilmList, showMoreFilms, resetFilmsPerPage} from '../store/action';
-
+import {changeGenre, updateFilmList, showMoreFilms, resetFilmsPerPage, resetFilmList, resetGenre} from '../store/action';
 export enum ActionType {
+  ResetGenre = 'films/resetGenre',
+  UpdateFilmList = 'films/updateFilmList',
+  ResetFilmList = 'films/resetFilmList',
   ChangeGenre = 'films/changeGenre',
-  UpdateFilmList = 'films/getFilmsByGenre',
   ShowMoreFilms = 'films/showMoreFilms',
   ResetFilmsPerPage = 'films/resetFilmsPerPage',
 }
@@ -20,6 +21,8 @@ export type UpdateFilmListAction = {
 
 export type Actions =
 | ReturnType<typeof changeGenre>
+| ReturnType<typeof resetGenre>
 | ReturnType<typeof updateFilmList>
+| ReturnType<typeof resetFilmList>
 | ReturnType<typeof showMoreFilms>
 | ReturnType<typeof resetFilmsPerPage>;

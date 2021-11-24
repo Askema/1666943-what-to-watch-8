@@ -4,6 +4,7 @@ import NotFoundPage from '../not-found-page/NotFoundPage';
 import {Link} from 'react-router-dom';
 import { AppRoute } from '../../constants/const';
 import AddReviewForm from '../add-review-form/add-review-form';
+import Logo from '../logo/logo';
 
 type AddReviewPageProps = {
   films: Film[];
@@ -27,11 +28,7 @@ function AddReviewPage(props: AddReviewPageProps): JSX.Element {
 
           <header className="page-header">
             <div className="logo">
-              <a href="main.html" className="logo__link">
-                <span className="logo__letter logo__letter--1">W</span>
-                <span className="logo__letter logo__letter--2">T</span>
-                <span className="logo__letter logo__letter--3">W</span>
-              </a>
+              <Logo/>
             </div>
 
             <nav className="breadcrumbs">

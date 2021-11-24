@@ -6,6 +6,7 @@ import NotFoundPage from '../not-found-page/NotFoundPage';
 import Tabs from '../tabs/tabs';
 import FilmList from '../film-list/film-list';
 import { getSimilarFilms } from '../../utils/film';
+import Logo from '../logo/logo';
 
 type FilmPageProps = {
   films: Film[];
@@ -29,11 +30,7 @@ function FilmPage({ films }: FilmPageProps): JSX.Element {
 
             <header className="page-header film-card__head">
               <div className="logo">
-                <a href="main.html" className="logo__link">
-                  <span className="logo__letter logo__letter--1">W</span>
-                  <span className="logo__letter logo__letter--2">T</span>
-                  <span className="logo__letter logo__letter--3">W</span>
-                </a>
+                <Logo/>
               </div>
 
               <ul className="user-block">
