@@ -1,4 +1,4 @@
-import { AppRoute, Links } from '../../constants/const';
+import { APIRouteById, AuthorizationStatus, Links } from '../../constants/const';
 import { Link } from 'react-router-dom';
 import NotFoundPage from '../not-found-page/NotFoundPage';
 import Tabs from '../tabs/tabs';
@@ -6,28 +6,46 @@ import FilmList from '../film-list/film-list';
 import Logo from '../logo/logo';
 import { connect, ConnectedProps } from 'react-redux';
 import { State } from '../../types/state';
-import { getSimilarFilms } from '../../utils/adapter/film';
-import {useParams} from 'react-router';
-import {fetchCurrentFilmAction} from '../../store/api-actions';
-import {store} from '../..';
-import {ThunkAppDispatch} from '../../types/action';
+import { useParams } from 'react-router';
+import { fetchCurrentFilmAction } from '../../store/api-actions';
+import { ThunkAppDispatch } from '../../types/action';
+import UserBlock from '../user-block/user-block';
+import { Films, FilmsFromServer } from '../../types/film';
+import { useEffect, useState } from 'react';
+import api from '../../services/api';
+import { adaptFilmsToClient } from '../../utils/adapter/adapter';
+
+const SIMILAR_FILMS_COUNT = 4;
 
 
 const mapStateToProps = (state: State) => ({
-  films: state.films,
   filmsPerPageCount: state.filmsPerPageCount,
   film: state.currentFilm,
+  authorizationStatus: state.authorizationStatus,
 });
 
-const connector = connect(mapStateToProps);
+const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
+  fetchCurrentFilm(id: number) {
+    dispatch(fetchCurrentFilmAction(id));
+  },
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-function FilmPage({ film, films, filmsPerPageCount }: PropsFromRedux): JSX.Element {
-  const {id} = useParams<{id: string}>();
+function FilmPage({ film, filmsPerPageCount, fetchCurrentFilm, authorizationStatus }: PropsFromRedux): JSX.Element {
+  const { id } = useParams<{ id: string }>();
 
-  (store.dispatch as ThunkAppDispatch)(fetchCurrentFilmAction(Number(id)));
-  console.log(films[0]);
+
+  const [appState, setAppState] = useState<Films>([]);
+
+  useEffect(() => {
+    api.get<FilmsFromServer>(APIRouteById.SimilarFilmsById(Number(id))).then((response) => setAppState(adaptFilmsToClient(response.data)));
+    fetchCurrentFilm(Number(id));
+  }, [fetchCurrentFilm, id, setAppState]);
+
+  const similarFilms = appState.slice(0, SIMILAR_FILMS_COUNT);
 
   if (film) {
     return (
@@ -45,18 +63,7 @@ function FilmPage({ film, films, filmsPerPageCount }: PropsFromRedux): JSX.Eleme
                 <Logo />
               </div>
 
-              <ul className="user-block">
-                <li className="user-block__item">
-                  <div className="user-block__avatar">
-                    <Link to={AppRoute.MyList}>
-                      <img src="img/avatar.jpg" alt="User avatar" width="63" height="63" />
-                    </Link>
-                  </div>
-                </li>
-                <li className="user-block__item">
-                  <Link to={AppRoute.SignIn} className="user-block__link">Sign out</Link>
-                </li>
-              </ul>
+              <UserBlock />
             </header>
 
             <div className="film-card__wrap">
@@ -80,7 +87,9 @@ function FilmPage({ film, films, filmsPerPageCount }: PropsFromRedux): JSX.Eleme
                     </svg>
                     <span>My list</span>
                   </button>
-                  <Link to={Links.AddReviewByFilmId(film.id)} className="btn film-card__button">Add review</Link>
+                  {authorizationStatus === AuthorizationStatus.Auth ?
+                    <Link to={Links.AddReviewByFilmId(film.id)} className="btn film-card__button">Add review</Link>
+                    : ''}
                 </div>
               </div>
             </div>
@@ -101,7 +110,7 @@ function FilmPage({ film, films, filmsPerPageCount }: PropsFromRedux): JSX.Eleme
           <section className="catalog catalog--like-this">
             <h2 className="catalog__title">More like this</h2>
 
-            <FilmList films={getSimilarFilms(film, films)} filmsPerPageCount={filmsPerPageCount} />
+            <FilmList films={similarFilms} filmsPerPageCount={filmsPerPageCount} />
           </section>
 
           <footer className="page-footer">
@@ -127,5 +136,5 @@ function FilmPage({ film, films, filmsPerPageCount }: PropsFromRedux): JSX.Eleme
   }
 }
 
-export {FilmPage};
+export { FilmPage };
 export default connector(FilmPage);

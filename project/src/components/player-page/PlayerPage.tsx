@@ -4,26 +4,34 @@ import NotFoundPage from '../not-found-page/NotFoundPage';
 import {connect, ConnectedProps} from 'react-redux';
 import {State} from '../../types/state';
 import {fetchCurrentFilmAction} from '../../store/api-actions';
-import {store} from '../..';
 import {ThunkAppDispatch} from '../../types/action';
+import { useEffect } from 'react';
 
 const mapStateToProps = (state: State) => ({
   film: state.currentFilm,
 });
 
-const connector = connect(mapStateToProps);
+const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
+  fetchCurrentFilm(id: number) {
+    dispatch(fetchCurrentFilmAction(id));
+  },
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 
 function PlayerPage(props: PropsFromRedux): JSX.Element {
-  const {film} = props;
+  const {film, fetchCurrentFilm} = props;
   const playerStyle = {
     left: '30%',
   };
 
   const {id} = useParams<{id: string}>();
-  (store.dispatch as ThunkAppDispatch)(fetchCurrentFilmAction(Number(id)));
+  useEffect(() => {
+    fetchCurrentFilm(Number(id));
+  }, [fetchCurrentFilm, id]);
 
   if (film) {
     return (

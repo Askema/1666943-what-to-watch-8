@@ -5,16 +5,21 @@ export enum AppRoute {
   Film = '/films/:id',
   AddReview = '/films/:id/review',
   Player = '/player/:id',
+  NotFound = '/notfound'
 }
 
 export enum APIRoute {
   Films = '/films',
   Promo = '/promo',
+  Login = '/login',
+  Logout = '/logout',
 }
 
 export const APIRouteById = {
   FilmById: ((id: number): string => `/films/${id}`),
   CommentsByFilmId: ((filmId: number): string => `/comments/${filmId}`),
+  SimilarFilmsById: ((filmId: number): string => `/films/${filmId}/similar`),
+  CommentPostByFilmId: ((filmId: number): string => `/comments/${filmId}`),
 };
 
 export enum AuthorizationStatus {

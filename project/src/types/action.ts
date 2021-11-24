@@ -7,7 +7,20 @@ import {
 } from 'axios';
 import {State} from '../types/state';
 
-import {changeGenre, showMoreFilms, resetFilmsPerPage, resetGenre, loadFilms, loadFilm} from '../store/action';
+import {
+  changeGenre,
+  dropUserAvatar,
+  loadFilm,
+  loadFilms,
+  redirectToRoute,
+  requireAuthorization,
+  requireLogout,
+  resetFilmsPerPage,
+  resetGenre,
+  saveUserAvatar,
+  setLoginError,
+  showMoreFilms
+} from '../store/action';
 
 export enum ActionType {
   ChangeGenre = 'films/changeGenre',
@@ -18,6 +31,12 @@ export enum ActionType {
   ResetFilmsPerPage = 'films/resetFilmsPerPage',
   LoadFilms = 'data/loadFilms',
   LoadFilm = 'data/loadFilm',
+  RequireAuthorization = 'user/requireAuthorization',
+  RequireLogout = 'user/requireLogout',
+  RedirectToRoute = 'films/redirectToRoute',
+  SaveUserAvatar = 'data/saveUserAvatar',
+  DropUserAvatar = 'data/dropUserAvatar',
+  SetLoginError = 'uesr/setLoginError',
 }
 
 export type ChangeGenreAction = {
@@ -31,7 +50,13 @@ export type Actions =
   | ReturnType<typeof showMoreFilms>
   | ReturnType<typeof resetFilmsPerPage>
   | ReturnType<typeof loadFilms>
-  | ReturnType<typeof loadFilm>;
+  | ReturnType<typeof loadFilm>
+  | ReturnType<typeof requireAuthorization>
+  | ReturnType<typeof requireLogout>
+  | ReturnType<typeof redirectToRoute>
+  | ReturnType<typeof saveUserAvatar>
+  | ReturnType<typeof dropUserAvatar>
+  | ReturnType<typeof setLoginError>;
 
 export type ThunkActionResult<R = Promise<void>> = ThunkAction<R, State, AxiosInstance, Actions>;
 

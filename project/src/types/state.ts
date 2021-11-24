@@ -1,4 +1,5 @@
 import {Film, Films} from './film';
+import {AuthorizationStatus} from '../constants/const';
 
 export type State = {
   genre: string,
@@ -6,4 +7,7 @@ export type State = {
   filmsPerPageCount: number,
   currentFilm?: Film,
   isDataLoaded: boolean,
+  authorizationStatus: AuthorizationStatus,
+  userAvatar: string,
+  loginError?: string,
 };

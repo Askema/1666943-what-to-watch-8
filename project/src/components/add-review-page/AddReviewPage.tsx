@@ -1,26 +1,35 @@
-import Logo from '../logo/logo';
-import {Link} from 'react-router-dom';
-import {AppRoute, Links} from '../../constants/const';
+import { Links } from '../../constants/const';
 import AddReviewForm from '../add-review-form/add-review-form';
-import {connect, ConnectedProps} from 'react-redux';
-import {State} from '../../types/state';
 import NotFoundPage from '../not-found-page/NotFoundPage';
-import {useParams} from 'react-router';
-import {fetchCurrentFilmAction} from '../../store/api-actions';
-import {store} from '../..';
-import {ThunkAppDispatch} from '../../types/action';
+import { ConnectedProps, connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import Logo from '../logo/logo';
+import { State } from '../../types/state';
+import { ThunkAppDispatch } from '../../types/action';
+import { fetchCurrentFilmAction } from '../../store/api-actions';
+import { useParams } from 'react-router';
+import UserBlock from '../user-block/user-block';
+import {useEffect} from 'react';
 
 const mapStateToProps = (state: State) => ({
   film: state.currentFilm,
 });
 
-const connector = connect(mapStateToProps);
+const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
+  fetchCurrentFilm(id: number) {
+    dispatch(fetchCurrentFilmAction(id));
+  },
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-function AddReviewPage({ film }: PropsFromRedux): JSX.Element {
+function AddReviewPage({ film, fetchCurrentFilm }: PropsFromRedux): JSX.Element {
   const { id } = useParams<{ id: string }>();
-  (store.dispatch as ThunkAppDispatch)(fetchCurrentFilmAction(Number(id)));
+  useEffect(() => {
+    fetchCurrentFilm(Number(id));
+  }, [fetchCurrentFilm, id]);
 
   if (film) {
     return (
@@ -48,18 +57,7 @@ function AddReviewPage({ film }: PropsFromRedux): JSX.Element {
               </ul>
             </nav>
 
-            <ul className="user-block">
-              <li className="user-block__item">
-                <div className="user-block__avatar">
-                  <Link to={AppRoute.MyList}>
-                    <img src="img/avatar.jpg" alt="User avatar" width="63" height="63" />
-                  </Link>
-                </div>
-              </li>
-              <li className="user-block__item">
-                <Link to={AppRoute.SignIn} className="user-block__link">Sign out</Link>
-              </li>
-            </ul>
+            <UserBlock />
           </header>
 
           <div className="film-card__poster film-card__poster--small">
@@ -78,6 +76,6 @@ function AddReviewPage({ film }: PropsFromRedux): JSX.Element {
   );
 }
 
-export {AddReviewPage};
+export { AddReviewPage };
 export default connector(AddReviewPage);
 

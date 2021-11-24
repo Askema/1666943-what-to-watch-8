@@ -9,11 +9,13 @@ import thunk from 'redux-thunk';
 import {ThunkAppDispatch} from './types/action';
 import {fetchFilmsAction} from './store/api-actions';
 import api from './services/api';
+import {redirect} from './store/middlewares/redirect';
 
 export const store = createStore(
   reducer,
   composeWithDevTools(
     applyMiddleware(thunk.withExtraArgument(api)),
+    applyMiddleware(redirect),
   ),
 );
 

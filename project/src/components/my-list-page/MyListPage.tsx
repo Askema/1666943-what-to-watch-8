@@ -1,10 +1,9 @@
-import {Link} from 'react-router-dom';
-import { AppRoute } from '../../constants/const';
 import Logo from '../logo/logo';
 import {connect, ConnectedProps} from 'react-redux';
 import {State} from '../../types/state';
 import FilmList from '../film-list/film-list';
 import {getFavoriteFilms} from '../../utils/adapter/film';
+import UserBlock from '../user-block/user-block';
 
 const mapStateToProps = (state: State) => ({
   films: state.films,
@@ -24,16 +23,7 @@ function MyListPage(props: PropsFromRedux): JSX.Element {
 
         <h1 className="page-title user-page__title">My list</h1>
 
-        <ul className="user-block">
-          <li className="user-block__item">
-            <div className="user-block__avatar">
-              <img src="img/avatar.jpg" alt="User avatar" width="63" height="63" />
-            </div>
-          </li>
-          <li className="user-block__item">
-            <Link to={AppRoute.SignIn} className="user-block__link"> sign out</Link>
-          </li>
-        </ul>
+        <UserBlock />
       </header>
 
       <section className="catalog">

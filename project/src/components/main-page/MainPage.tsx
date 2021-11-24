@@ -1,5 +1,4 @@
-import { Link } from 'react-router-dom';
-import { APIRoute, AppRoute } from '../../constants/const';
+import { APIRoute } from '../../constants/const';
 import FilmList from '../film-list/film-list';
 import { Promo } from '../../types/promo';
 import GenreList from '../genre-list/genre-list';
@@ -13,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { adaptPromoToClient } from '../../utils/adapter/promo';
 import { FilmFromServer } from '../../types/film';
 import NotFoundPage from '../not-found-page/NotFoundPage';
+import UserBlock from '../user-block/user-block';
 
 const mapStateToProps = (state: State) => ({
   genre: state.genre,
@@ -51,18 +51,7 @@ function MainScreen(props: PropsFromRedux): JSX.Element {
               <Logo />
             </div>
 
-            <ul className="user-block">
-              <li className="user-block__item">
-                <div className="user-block__avatar">
-                  <Link to={AppRoute.MyList}>
-                    <img src="img/avatar.jpg" alt="User avatar" width="63" height="63" />
-                  </Link>
-                </div>
-              </li>
-              <li className="user-block__item">
-                <Link to={AppRoute.SignIn} className="user-block__link"> Sign out</Link>
-              </li>
-            </ul>
+            <UserBlock />
           </header>
 
           <div className="film-card__wrap">
