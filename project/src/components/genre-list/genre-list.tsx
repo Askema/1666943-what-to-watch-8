@@ -7,15 +7,18 @@ import {Dispatch} from 'redux';
 import {Actions} from '../../types/action';
 import {changeGenre} from '../../store/action';
 import {resetFilmsPerPage} from '../../store/action';
+import {getFilms} from '../../store/film-data/selectors';
+import {getGenre} from '../../store/film-search/selectors';
 
 type GenreListProps = {
   genre: string;
 }
 
 const mapStateToProps = (state: State) => ({
-  genre: state.genre,
-  films: state.films,
+  genre: getGenre(state),
+  films: getFilms(state),
 });
+
 
 const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
   onChangeGenre(genre: string) {

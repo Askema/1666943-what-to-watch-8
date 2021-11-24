@@ -12,6 +12,7 @@ import {
   dropUserAvatar,
   loadFilm,
   loadFilms,
+  loadPromo,
   redirectToRoute,
   requireAuthorization,
   requireLogout,
@@ -37,6 +38,7 @@ export enum ActionType {
   SaveUserAvatar = 'data/saveUserAvatar',
   DropUserAvatar = 'data/dropUserAvatar',
   SetLoginError = 'uesr/setLoginError',
+  LoadPromo = 'data/loadPromo',
 }
 
 export type ChangeGenreAction = {
@@ -56,7 +58,8 @@ export type Actions =
   | ReturnType<typeof redirectToRoute>
   | ReturnType<typeof saveUserAvatar>
   | ReturnType<typeof dropUserAvatar>
-  | ReturnType<typeof setLoginError>;
+  | ReturnType<typeof setLoginError>
+  | ReturnType<typeof loadPromo>;
 
 export type ThunkActionResult<R = Promise<void>> = ThunkAction<R, State, AxiosInstance, Actions>;
 

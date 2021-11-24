@@ -4,9 +4,10 @@ import {State} from '../../types/state';
 import FilmList from '../film-list/film-list';
 import {getFavoriteFilms} from '../../utils/adapter/film';
 import UserBlock from '../user-block/user-block';
+import {getFilms} from '../../store/film-data/selectors';
 
 const mapStateToProps = (state: State) => ({
-  films: state.films,
+  films: getFilms(state),
 });
 const connector = connect(mapStateToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;

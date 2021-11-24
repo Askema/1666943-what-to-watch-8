@@ -9,10 +9,10 @@ import { ThunkAppDispatch } from '../../types/action';
 import { fetchCurrentFilmAction } from '../../store/api-actions';
 import { useParams } from 'react-router';
 import UserBlock from '../user-block/user-block';
-import {useEffect} from 'react';
+import { getCurrentFilm } from '../../store/film-data/selectors';
 
 const mapStateToProps = (state: State) => ({
-  film: state.currentFilm,
+  film: getCurrentFilm(state),
 });
 
 const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
@@ -27,9 +27,7 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 function AddReviewPage({ film, fetchCurrentFilm }: PropsFromRedux): JSX.Element {
   const { id } = useParams<{ id: string }>();
-  useEffect(() => {
-    fetchCurrentFilm(Number(id));
-  }, [fetchCurrentFilm, id]);
+  fetchCurrentFilm(Number(id));
 
   if (film) {
     return (

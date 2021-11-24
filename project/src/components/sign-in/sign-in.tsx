@@ -5,9 +5,10 @@ import { AuthData } from '../../types/auth-data';
 import Logo from '../logo/logo';
 import { ThunkAppDispatch } from '../../types/action';
 import { loginAction } from '../../store/api-actions';
+import { getLoginError } from '../../store/user-process/selectors';
 
 const mapStateToProps = (state: State) => ({
-  loginError: state.loginError,
+  loginError: getLoginError(state),
 });
 
 const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({

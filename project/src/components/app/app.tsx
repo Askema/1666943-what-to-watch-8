@@ -9,32 +9,48 @@ import PlayerPage from '../player-page/PlayerPage';
 import PrivateRoute from '../private-route/private-route';
 import SignIn from '../sign-in/sign-in';
 import browserHistory from '../../browser-history';
+import {ConnectedProps, connect} from 'react-redux';
+import {State} from '../../types/state';
+import LoadingScreen from '../loading-screen/loading-screen';
+import {getLoadedDataStatus} from '../../store/film-data/selectors';
 
+const mapStateToProps = (state: State) => ({
+  isDataLoaded: getLoadedDataStatus(state),
+});
 
-function App(): JSX.Element {
-
+const connector = connect(mapStateToProps);
+type PropsFromRedux = ConnectedProps<typeof connector>;
+function App(props: PropsFromRedux): JSX.Element {
+  const {isDataLoaded} = props;
+  if (!isDataLoaded) {
+    return (
+      <LoadingScreen />
+    );
+  }
   return (
     <BrowserRouter history={browserHistory}>
       <Switch>
         <Route exact path={AppRoute.Main}>
-          <MainPage />
+          <MainPage/>
         </Route>
-        <Route exact path={AppRoute.SignIn} component={SignIn} />
+        <Route exact path={AppRoute.SignIn}>
+          <SignIn />
+        </Route>
         <PrivateRoute
           exact
           path={AppRoute.MyList}
           render={() => <MyList />}
         >
         </PrivateRoute>
-        <Route path={AppRoute.Film}>
-          <FilmPage />
-        </Route>
         <PrivateRoute
           exact
           path={AppRoute.AddReview}
           render={() => <AddReviewPage />}
         >
         </PrivateRoute>
+        <Route path={AppRoute.Film}>
+          <FilmPage />
+        </Route>
         <Route exact path={AppRoute.Player}>
           <PlayerPage />
         </Route>
@@ -45,5 +61,5 @@ function App(): JSX.Element {
     </BrowserRouter>
   );
 }
-
-export default App;
+export {App};
+export default connector(App);

@@ -60,3 +60,10 @@ export const saveUserAvatar = (userAvatar: string) => ({
 export const dropUserAvatar = () => ({
   type: ActionType.DropUserAvatar,
 } as const);
+
+export const loadPromo = (promo: Film) => ({
+  type: ActionType.LoadPromo,
+  payload: {
+    promo,
+  },
+} as const);

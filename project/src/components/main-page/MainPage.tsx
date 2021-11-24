@@ -13,11 +13,13 @@ import { adaptPromoToClient } from '../../utils/adapter/promo';
 import { FilmFromServer } from '../../types/film';
 import NotFoundPage from '../not-found-page/NotFoundPage';
 import UserBlock from '../user-block/user-block';
+import {getFilmsPerPageCount, getGenre} from '../../store/film-search/selectors';
+import {getFilms} from '../../store/film-data/selectors';
 
 const mapStateToProps = (state: State) => ({
-  genre: state.genre,
-  films: state.films,
-  filmsPerPageCount: state.filmsPerPageCount,
+  genre: getGenre(state),
+  films: getFilms(state),
+  filmsPerPageCount: getFilmsPerPageCount(state),
 });
 
 const connector = connect(mapStateToProps);

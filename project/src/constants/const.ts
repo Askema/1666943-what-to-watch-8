@@ -8,6 +8,8 @@ export enum AppRoute {
   NotFound = '/notfound'
 }
 
+export const PROMO_ID = 'promo';
+
 export enum APIRoute {
   Films = '/films',
   Promo = '/promo',

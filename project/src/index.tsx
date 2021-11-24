@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import App from './components/app/app';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
-import { reducer } from './store/reducer';
+import {rootReducer} from './store/root-reducer';
 import {composeWithDevTools} from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import {ThunkAppDispatch} from './types/action';
@@ -12,7 +12,7 @@ import api from './services/api';
 import {redirect} from './store/middlewares/redirect';
 
 export const store = createStore(
-  reducer,
+  rootReducer,
   composeWithDevTools(
     applyMiddleware(thunk.withExtraArgument(api)),
     applyMiddleware(redirect),

@@ -1,5 +1,6 @@
 import { AppRoute, AuthorizationStatus } from '../../constants/const';
 import { ConnectedProps, connect } from 'react-redux';
+import {getAuthorizationStatus, getUserAvatar} from '../../store/user-process/selectors';
 
 import { Link } from 'react-router-dom';
 import { State } from '../../types/state';
@@ -7,10 +8,9 @@ import { ThunkAppDispatch } from '../../types/action';
 import { logoutAction } from '../../store/api-actions';
 
 const mapStateToProps = (state: State) => ({
-  authorizationStatus: state.authorizationStatus,
-  userAvatar: state.userAvatar,
+  authorizationStatus: getAuthorizationStatus(state),
+  userAvatar: getUserAvatar(state),
 });
-
 const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
   signOut() {
     dispatch(logoutAction());

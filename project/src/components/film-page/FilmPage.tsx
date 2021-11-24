@@ -14,14 +14,17 @@ import { Films, FilmsFromServer } from '../../types/film';
 import { useEffect, useState } from 'react';
 import api from '../../services/api';
 import { adaptFilmsToClient } from '../../utils/adapter/adapter';
+import {getAuthorizationStatus} from '../../store/user-process/selectors';
+import {getCurrentFilm} from '../../store/film-data/selectors';
+import {getFilmsPerPageCount} from '../../store/film-search/selectors';
 
 const SIMILAR_FILMS_COUNT = 4;
 
 
 const mapStateToProps = (state: State) => ({
-  filmsPerPageCount: state.filmsPerPageCount,
-  film: state.currentFilm,
-  authorizationStatus: state.authorizationStatus,
+  filmsPerPageCount: getFilmsPerPageCount(state),
+  film: getCurrentFilm(state),
+  authorizationStatus: getAuthorizationStatus(state),
 });
 
 const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
