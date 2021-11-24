@@ -1,4 +1,4 @@
-import {ChangeGenreAction, ActionType, UpdateFilmListAction} from '../types/action';
+import {ChangeGenreAction, ActionType} from '../types/action';
 import { Film } from '../types/film';
 
 export const changeGenre = (genre: string): ChangeGenreAction => ({
@@ -10,19 +10,24 @@ export const resetGenre = () => ({
   type: ActionType.ResetGenre,
 } as const);
 
-export const updateFilmList = (films: Film[]): UpdateFilmListAction => ({
-  type: ActionType.UpdateFilmList,
-  payload: films,
-});
-
-export const resetFilmList = () => ({
-  type: ActionType.ResetFilmList,
-} as const);
-
 export const showMoreFilms = () => ({
   type: ActionType.ShowMoreFilms,
 } as const);
 
 export const resetFilmsPerPage = () => ({
   type: ActionType.ResetFilmsPerPage,
+} as const);
+
+export const loadFilms = (films: Film[]) => ({
+  type: ActionType.LoadFilms,
+  payload: {
+    films,
+  },
+} as const);
+
+export const loadFilm = (currentFilm: Film) => ({
+  type: ActionType.LoadFilm,
+  payload: {
+    currentFilm,
+  },
 } as const);

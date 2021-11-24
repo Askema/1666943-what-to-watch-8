@@ -3,12 +3,9 @@ import {AppRoute} from '../../constants/const';
 import {Dispatch} from 'redux';
 import {Actions} from '../../types/action';
 import {connect, ConnectedProps} from 'react-redux';
-import {resetFilmList, resetFilmsPerPage, resetGenre} from '../../store/action';
+import {resetFilmsPerPage, resetGenre} from '../../store/action';
 
 const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
-  onResetFilmList() {
-    dispatch(resetFilmList());
-  },
   onResetGenre() {
     dispatch(resetGenre());
   },
@@ -22,12 +19,11 @@ const connector = connect(null, mapDispatchToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 function Logo(props: PropsFromRedux): JSX.Element {
-  const {onResetFilmList, onResetGenre, onResetFilmsPerPage} = props;
+  const {onResetGenre, onResetFilmsPerPage} = props;
   return (
     <Link to={AppRoute.Main} className="logo__link"
 
       onClick={() => {
-        onResetFilmList();
         onResetGenre();
         onResetFilmsPerPage();
       }}

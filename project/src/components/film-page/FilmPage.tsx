@@ -1,21 +1,33 @@
-import { AppRoute, FILMS_PER_PAGE_COUNT } from '../../constants/const';
-import { Film } from '../../types/film';
-import { useParams, useHistory } from 'react-router';
+import { AppRoute, Links } from '../../constants/const';
 import { Link } from 'react-router-dom';
 import NotFoundPage from '../not-found-page/NotFoundPage';
 import Tabs from '../tabs/tabs';
 import FilmList from '../film-list/film-list';
-import { getSimilarFilms } from '../../utils/film';
 import Logo from '../logo/logo';
+import { connect, ConnectedProps } from 'react-redux';
+import { State } from '../../types/state';
+import { getSimilarFilms } from '../../utils/adapter/film';
+import {useParams} from 'react-router';
+import {fetchCurrentFilmAction} from '../../store/api-actions';
+import {store} from '../..';
+import {ThunkAppDispatch} from '../../types/action';
 
-type FilmPageProps = {
-  films: Film[];
-}
 
-function FilmPage({ films }: FilmPageProps): JSX.Element {
-  const { id } = useParams<{ id: string }>();
-  const history = useHistory();
-  const film: Film | undefined = films.find((element) => element.id === Number(id));
+const mapStateToProps = (state: State) => ({
+  films: state.films,
+  filmsPerPageCount: state.filmsPerPageCount,
+  film: state.currentFilm,
+});
+
+const connector = connect(mapStateToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+function FilmPage({ film, films, filmsPerPageCount }: PropsFromRedux): JSX.Element {
+  const {id} = useParams<{id: string}>();
+
+  (store.dispatch as ThunkAppDispatch)(fetchCurrentFilmAction(Number(id)));
+  console.log(films[0]);
 
   if (film) {
     return (
@@ -30,15 +42,15 @@ function FilmPage({ films }: FilmPageProps): JSX.Element {
 
             <header className="page-header film-card__head">
               <div className="logo">
-                <Logo/>
+                <Logo />
               </div>
 
               <ul className="user-block">
                 <li className="user-block__item">
-                  <div className="user-block__avatar"
-                    onClick={() => history.push(AppRoute.MyList)}
-                  >
-                    <img src="img/avatar.jpg" alt="User avatar" width="63" height="63" />
+                  <div className="user-block__avatar">
+                    <Link to={AppRoute.MyList}>
+                      <img src="img/avatar.jpg" alt="User avatar" width="63" height="63" />
+                    </Link>
                   </div>
                 </li>
                 <li className="user-block__item">
@@ -68,7 +80,7 @@ function FilmPage({ films }: FilmPageProps): JSX.Element {
                     </svg>
                     <span>My list</span>
                   </button>
-                  <Link to={`/films/${id}/review`} className="btn film-card__button">Add review</Link>
+                  <Link to={Links.AddReviewByFilmId(film.id)} className="btn film-card__button">Add review</Link>
                 </div>
               </div>
             </div>
@@ -89,10 +101,7 @@ function FilmPage({ films }: FilmPageProps): JSX.Element {
           <section className="catalog catalog--like-this">
             <h2 className="catalog__title">More like this</h2>
 
-            <FilmList
-              films={getSimilarFilms(film, films)}
-              filmsPerPageCount={FILMS_PER_PAGE_COUNT}
-            />
+            <FilmList films={getSimilarFilms(film, films)} filmsPerPageCount={filmsPerPageCount} />
           </section>
 
           <footer className="page-footer">
@@ -118,4 +127,5 @@ function FilmPage({ films }: FilmPageProps): JSX.Element {
   }
 }
 
-export default FilmPage;
+export {FilmPage};
+export default connector(FilmPage);

@@ -1,21 +1,31 @@
 import {useParams} from 'react-router';
 import {Link} from 'react-router-dom';
-import {Film} from '../../types/film';
 import NotFoundPage from '../not-found-page/NotFoundPage';
+import {connect, ConnectedProps} from 'react-redux';
+import {State} from '../../types/state';
+import {fetchCurrentFilmAction} from '../../store/api-actions';
+import {store} from '../..';
+import {ThunkAppDispatch} from '../../types/action';
 
-type PlayerPageProps = {
-  films: Film[];
-}
+const mapStateToProps = (state: State) => ({
+  film: state.currentFilm,
+});
 
-function PlayerPage({films}: PlayerPageProps): JSX.Element {
+const connector = connect(mapStateToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+
+function PlayerPage(props: PropsFromRedux): JSX.Element {
+  const {film} = props;
   const playerStyle = {
     left: '30%',
   };
 
   const {id} = useParams<{id: string}>();
-  const film: Film | undefined = films.find((element) => element.id === Number(id));
+  (store.dispatch as ThunkAppDispatch)(fetchCurrentFilmAction(Number(id)));
 
-  if (film !== undefined) {
+  if (film) {
     return (
       <div className="player">
         <video src={film.videoLink} className="player__video" poster={film.posterImage}></video>
@@ -56,5 +66,5 @@ function PlayerPage({films}: PlayerPageProps): JSX.Element {
     );
   }
 }
-
-export default PlayerPage;
+export {PlayerPage};
+export default connector(PlayerPage);

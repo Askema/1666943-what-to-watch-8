@@ -1,20 +1,26 @@
-import {Film} from '../../types/film';
-import {useParams, useHistory} from 'react-router';
-import NotFoundPage from '../not-found-page/NotFoundPage';
-import {Link} from 'react-router-dom';
-import { AppRoute } from '../../constants/const';
-import AddReviewForm from '../add-review-form/add-review-form';
 import Logo from '../logo/logo';
+import {Link} from 'react-router-dom';
+import {AppRoute, Links} from '../../constants/const';
+import AddReviewForm from '../add-review-form/add-review-form';
+import {connect, ConnectedProps} from 'react-redux';
+import {State} from '../../types/state';
+import NotFoundPage from '../not-found-page/NotFoundPage';
+import {useParams} from 'react-router';
+import {fetchCurrentFilmAction} from '../../store/api-actions';
+import {store} from '../..';
+import {ThunkAppDispatch} from '../../types/action';
 
-type AddReviewPageProps = {
-  films: Film[];
-}
+const mapStateToProps = (state: State) => ({
+  film: state.currentFilm,
+});
 
-function AddReviewPage(props: AddReviewPageProps): JSX.Element {
-  const {films} = props;
-  const {id} = useParams<{id: string}>();
-  const film: Film | undefined = films.find((element) => element.id === Number(id));
-  const history = useHistory();
+const connector = connect(mapStateToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+function AddReviewPage({ film }: PropsFromRedux): JSX.Element {
+  const { id } = useParams<{ id: string }>();
+  (store.dispatch as ThunkAppDispatch)(fetchCurrentFilmAction(Number(id)));
 
   if (film) {
     return (
@@ -28,13 +34,13 @@ function AddReviewPage(props: AddReviewPageProps): JSX.Element {
 
           <header className="page-header">
             <div className="logo">
-              <Logo/>
+              <Logo />
             </div>
 
             <nav className="breadcrumbs">
               <ul className="breadcrumbs__list">
                 <li className="breadcrumbs__item">
-                  <a href="film-page.html" className="breadcrumbs__link">{film.name}</a>
+                  <Link to={Links.OverviewFilmById(film.id)} className="breadcrumbs__link">{film.name}</Link>
                 </li>
                 <li className="breadcrumbs__item">
                   <a className="breadcrumbs__link" href="/">Add review</a>
@@ -44,10 +50,10 @@ function AddReviewPage(props: AddReviewPageProps): JSX.Element {
 
             <ul className="user-block">
               <li className="user-block__item">
-                <div className="user-block__avatar"
-                  onClick={() => history.push(AppRoute.MyList)}
-                >
-                  <img src="img/avatar.jpg" alt="User avatar" width="63" height="63" />
+                <div className="user-block__avatar">
+                  <Link to={AppRoute.MyList}>
+                    <img src="img/avatar.jpg" alt="User avatar" width="63" height="63" />
+                  </Link>
                 </div>
               </li>
               <li className="user-block__item">
@@ -72,4 +78,6 @@ function AddReviewPage(props: AddReviewPageProps): JSX.Element {
   );
 }
 
-export default AddReviewPage;
+export {AddReviewPage};
+export default connector(AddReviewPage);
+

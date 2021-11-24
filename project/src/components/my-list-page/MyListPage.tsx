@@ -1,19 +1,19 @@
-import {Film} from '../../types/film';
-import FilmCard from '../film-card/film-card';
 import {Link} from 'react-router-dom';
 import { AppRoute } from '../../constants/const';
-import {useState} from 'react';
-import { updateFilmList } from '../../store/action';
 import Logo from '../logo/logo';
+import {connect, ConnectedProps} from 'react-redux';
+import {State} from '../../types/state';
+import FilmList from '../film-list/film-list';
+import {getFavoriteFilms} from '../../utils/adapter/film';
 
-type MyListPageProps = {
-  films: Film[];
-}
+const mapStateToProps = (state: State) => ({
+  films: state.films,
+});
+const connector = connect(mapStateToProps);
+type PropsFromRedux = ConnectedProps<typeof connector>;
 
-function MyListPage({films}: MyListPageProps): JSX.Element {
-  const [activeCardId, setActiveCardId] = useState<number | null>(null);
-
-  const favoriteFilms = films.filter((film) => film.isFavorite === true);
+function MyListPage(props: PropsFromRedux): JSX.Element {
+  const {films} = props;
 
   return (
     <div className="user-page">
@@ -39,19 +39,7 @@ function MyListPage({films}: MyListPageProps): JSX.Element {
       <section className="catalog">
         <h2 className="catalog__title visually-hidden">Catalog</h2>
 
-        <div className="catalog__films-list">
-          {favoriteFilms.map((film) => (
-            <FilmCard
-              setActiveCardId={setActiveCardId}
-              isActive={film.id === activeCardId}
-              key={film.id}
-              film={film}
-              onUpdateFilmList={updateFilmList}
-              films={films}
-            />
-          ),
-          )};
-        </div>
+        <FilmList films={getFavoriteFilms(films)} filmsPerPageCount={films.length}/>
       </section>
 
       <footer className="page-footer">
@@ -71,4 +59,5 @@ function MyListPage({films}: MyListPageProps): JSX.Element {
   );
 }
 
-export default MyListPage;
+export {MyListPage};
+export default connector(MyListPage);

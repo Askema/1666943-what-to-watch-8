@@ -1,7 +1,9 @@
-import {Film} from './film';
+import {Film, Films} from './film';
 
 export type State = {
   genre: string,
-  films: Film[],
+  films: Films,
   filmsPerPageCount: number,
+  currentFilm?: Film,
+  isDataLoaded: boolean,
 };

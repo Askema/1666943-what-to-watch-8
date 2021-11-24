@@ -1,12 +1,23 @@
-import {Film} from './film';
-import {changeGenre, updateFilmList, showMoreFilms, resetFilmsPerPage, resetFilmList, resetGenre} from '../store/action';
+import {
+  ThunkAction,
+  ThunkDispatch
+} from 'redux-thunk';
+import {
+  AxiosInstance
+} from 'axios';
+import {State} from '../types/state';
+
+import {changeGenre, showMoreFilms, resetFilmsPerPage, resetGenre, loadFilms, loadFilm} from '../store/action';
+
 export enum ActionType {
+  ChangeGenre = 'films/changeGenre',
   ResetGenre = 'films/resetGenre',
   UpdateFilmList = 'films/updateFilmList',
   ResetFilmList = 'films/resetFilmList',
-  ChangeGenre = 'films/changeGenre',
   ShowMoreFilms = 'films/showMoreFilms',
   ResetFilmsPerPage = 'films/resetFilmsPerPage',
+  LoadFilms = 'data/loadFilms',
+  LoadFilm = 'data/loadFilm',
 }
 
 export type ChangeGenreAction = {
@@ -14,15 +25,14 @@ export type ChangeGenreAction = {
   payload: string;
 }
 
-export type UpdateFilmListAction = {
-  type: ActionType.UpdateFilmList;
-  payload: Film[];
-}
-
 export type Actions =
-| ReturnType<typeof changeGenre>
-| ReturnType<typeof resetGenre>
-| ReturnType<typeof updateFilmList>
-| ReturnType<typeof resetFilmList>
-| ReturnType<typeof showMoreFilms>
-| ReturnType<typeof resetFilmsPerPage>;
+  | ReturnType<typeof changeGenre>
+  | ReturnType<typeof resetGenre>
+  | ReturnType<typeof showMoreFilms>
+  | ReturnType<typeof resetFilmsPerPage>
+  | ReturnType<typeof loadFilms>
+  | ReturnType<typeof loadFilm>;
+
+export type ThunkActionResult<R = Promise<void>> = ThunkAction<R, State, AxiosInstance, Actions>;
+
+export type ThunkAppDispatch = ThunkDispatch<State, AxiosInstance, Actions>;

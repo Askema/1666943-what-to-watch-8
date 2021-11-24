@@ -4,6 +4,7 @@ import {Films} from '../../types/film';
 import {Dispatch} from 'redux';
 import {Actions} from '../../types/action';
 import {showMoreFilms} from '../../store/action';
+import { getFilmsByGenre } from '../../utils/adapter/film';
 
 type ShowMoreProps = {
   films: Films;
@@ -13,6 +14,7 @@ type ShowMoreProps = {
 const mapStateToProps = (state: State) => ({
   films: state.films,
   filmsPerPageCount: state.filmsPerPageCount,
+  genre: state.genre,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
@@ -27,9 +29,9 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 type ConnectedComponentProps = PropsFromRedux & ShowMoreProps;
 
 function ShowMore(props: ConnectedComponentProps): JSX.Element {
-  const {films, filmsPerPageCount, onShowMoreFilms} = props;
+  const {films, filmsPerPageCount, genre, onShowMoreFilms} = props;
 
-  if (films.length > filmsPerPageCount) {
+  if (getFilmsByGenre(genre, films).length > filmsPerPageCount) {
     return (
       <div className="catalog__more">
         <button className="catalog__button" type="button"
