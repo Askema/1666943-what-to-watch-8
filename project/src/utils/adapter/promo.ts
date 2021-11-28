@@ -7,4 +7,5 @@ export const adaptPromoToClient = (promo: FilmFromServer): Promo => ({
   released: promo.released,
   previewImage: promo['preview_image'],
   posterImage: promo['poster_image'],
+  isFavorite: false,
 });

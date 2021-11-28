@@ -1,11 +1,11 @@
 import {Router as BrowserRouter, Route, Switch} from 'react-router-dom';
 import {AppRoute} from '../../constants/const';
-import AddReviewPage from '../add-review-page/AddReviewPage';
-import FilmPage from '../film-page/FilmPage';
-import MainPage from '../main-page/MainPage';
+import AddReviewPage from '../add-review-page/add-review-page';
+import FilmPage from '../film-page/film-page';
+import MainPage from '../main-page/main-page';
 import MyList from '../my-list-page/MyListPage';
-import NotFoundPage from '../not-found-page/NotFoundPage';
-import PlayerPage from '../player-page/PlayerPage';
+import NotFoundPage from '../not-found-page/not-found-page';
+import PlayerPage from '../player-page/player-page';
 import PrivateRoute from '../private-route/private-route';
 import SignIn from '../sign-in/sign-in';
 import browserHistory from '../../browser-history';

@@ -1,6 +1,6 @@
 import { APIRouteById, AuthorizationStatus, Links } from '../../constants/const';
 import { Link } from 'react-router-dom';
-import NotFoundPage from '../not-found-page/NotFoundPage';
+import NotFoundPage from '../not-found-page/not-found-page';
 import Tabs from '../tabs/tabs';
 import FilmList from '../film-list/film-list';
 import Logo from '../logo/logo';
@@ -14,9 +14,10 @@ import { Films, FilmsFromServer } from '../../types/film';
 import { useEffect, useState } from 'react';
 import api from '../../services/api';
 import { adaptFilmsToClient } from '../../utils/adapter/adapter';
-import {getAuthorizationStatus} from '../../store/user-process/selectors';
-import {getCurrentFilm} from '../../store/film-data/selectors';
-import {getFilmsPerPageCount} from '../../store/film-search/selectors';
+import { getAuthorizationStatus } from '../../store/user-process/selectors';
+import { getCurrentFilm } from '../../store/film-data/selectors';
+import { getFilmsPerPageCount } from '../../store/film-search/selectors';
+import MyListButton from '../my-list-button/my-list-button';
 
 const SIMILAR_FILMS_COUNT = 4;
 
@@ -84,12 +85,7 @@ function FilmPage({ film, filmsPerPageCount, fetchCurrentFilm, authorizationStat
                     </svg>
                     <span>Play</span>
                   </Link>
-                  <button className="btn btn--list film-card__button" type="button">
-                    <svg viewBox="0 0 19 20" width="19" height="20">
-                      <use xlinkHref="#add"></use>
-                    </svg>
-                    <span>My list</span>
-                  </button>
+                  <MyListButton isFavorite={film.isFavorite} />
                   {authorizationStatus === AuthorizationStatus.Auth ?
                     <Link to={Links.AddReviewByFilmId(film.id)} className="btn film-card__button">Add review</Link>
                     : ''}

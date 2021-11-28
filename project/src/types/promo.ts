@@ -4,6 +4,7 @@ type Promo = {
   released: number,
   previewImage: string,
   posterImage: string,
+  isFavorite: boolean,
 }
 
 export type { Promo };

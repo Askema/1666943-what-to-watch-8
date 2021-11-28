@@ -7,7 +7,7 @@ import {useEffect, useState} from 'react';
 
 import {Film} from '../../types/film';
 import {Link} from 'react-router-dom';
-import NotFoundPage from '../not-found-page/NotFoundPage';
+import NotFoundPage from '../not-found-page/not-found-page';
 import {State} from '../../types/state';
 import {ThunkAppDispatch} from '../../types/action';
 import VideoPlayer from '../video-player/video-player';
@@ -31,7 +31,7 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-function PlayerScreen(props: PropsFromRedux): JSX.Element {
+function PlayerPage(props: PropsFromRedux): JSX.Element {
   const {film, promo, currentPlayerTime, videoDuration, fetchCurrentFilm} = props;
   const {id} = useParams<{id: string}>();
 
@@ -117,5 +117,5 @@ function PlayerScreen(props: PropsFromRedux): JSX.Element {
 
 }
 
-export {PlayerScreen};
-export default connector(PlayerScreen);
+export {PlayerPage};
+export default connector(PlayerPage);
