@@ -76,12 +76,25 @@ export const logoutAction = (): ThunkActionResult =>
     dispatch(dropUserAvatar());
   };
 
+export const changeFavoriteStatusAction = (filmId: number, favoriteStatus: number): ThunkActionResult =>
+  async (dispatch, _getState, api): Promise<void> => {
+    try {
+      await api.post(APIRouteById.ChangeFavoriteStatusByFilmId(filmId, favoriteStatus));
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === HttpCode.Unauthorized) {
+          dispatch(redirectToRoute(AppRoute.SignIn));
+        }
+      }
+    }
+  };
+
 export const commentPostAction = (filmId: number, { rating, comment }: CommentPost): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
     try {
-      await api.post<CommentPost>(APIRouteById.CommentPostByFilmId(filmId), {rating, comment});
+      await api.post<CommentPost>(APIRouteById.CommentPostByFilmId(filmId), { rating, comment });
       dispatch(redirectToRoute(Links.ReviewsFilmById(filmId)));
-    } catch (error: unknown){
+    } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         if (error.response?.status === HttpCode.Unauthorized) {
           dispatch(redirectToRoute(AppRoute.SignIn));

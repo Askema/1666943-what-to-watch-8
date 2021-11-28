@@ -1,7 +1,7 @@
 import {Link} from 'react-router-dom';
 import {AppRoute} from '../../constants/const';
 
-function NotFoundScreen(): JSX.Element {
+function NotFoundPage(): JSX.Element {
   return (
     <section>
       <h1>404 Not Found</h1>
@@ -10,4 +10,4 @@ function NotFoundScreen(): JSX.Element {
   );
 }
 
-export default NotFoundScreen;
+export default NotFoundPage;

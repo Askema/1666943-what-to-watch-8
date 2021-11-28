@@ -1,16 +1,11 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { ConnectedProps, connect } from 'react-redux';
+import {RatingList, RATING_VALUES} from '../rating-list/rating-list';
 
 import { CommentPost } from '../../types/review';
 import { ThunkAppDispatch } from '../../types/action';
 import { commentPostAction } from '../../store/api-actions';
 import { useParams } from 'react-router';
-
-const RATING_VALUES = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
-
-type RatingListProps = {
-  ratingValues: number[];
-}
 
 const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
   onSubmit(filmId: number, commentPost: CommentPost) {
@@ -21,22 +16,6 @@ const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
 const connector = connect(null, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
-
-function RatingList(props: RatingListProps): JSX.Element {
-  const { ratingValues } = props;
-
-  return (
-    <div className="rating__stars">
-      {ratingValues.map((ratingValue: number) =>
-        (
-          <>
-            <input className="rating__input" id={`star-${ratingValue}`} type="radio" name="rating" value={ratingValue} />
-            <label className="rating__label" htmlFor={`star-${ratingValue}`}>Rating {ratingValue}</label>
-          </>
-        ))}
-    </div>
-  );
-}
 
 function AddReviewForm(props: PropsFromRedux): JSX.Element {
   const { onSubmit } = props;
@@ -82,6 +61,8 @@ function AddReviewForm(props: PropsFromRedux): JSX.Element {
           className="add-review__textarea"
           name="review-text" id="review-text"
           placeholder="Review text"
+          minLength={50}
+          maxLength={400}
           onChange={handleTextInput}
         >
         </textarea>

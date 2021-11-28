@@ -11,10 +11,11 @@ import api from '../../services/api';
 import { useEffect, useState } from 'react';
 import { adaptPromoToClient } from '../../utils/adapter/promo';
 import { FilmFromServer } from '../../types/film';
-import NotFoundPage from '../not-found-page/NotFoundPage';
+import NotFoundPage from '../not-found-page/not-found-page';
 import UserBlock from '../user-block/user-block';
 import {getFilmsPerPageCount, getGenre} from '../../store/film-search/selectors';
 import {getFilms} from '../../store/film-data/selectors';
+import MyListButton from '../my-list-button/my-list-button';
 
 const mapStateToProps = (state: State) => ({
   genre: getGenre(state),
@@ -26,7 +27,7 @@ const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-function MainScreen(props: PropsFromRedux): JSX.Element {
+function MainPage(props: PropsFromRedux): JSX.Element {
   const { genre, films, filmsPerPageCount } = props;
   const [appState, setAppState] = useState<Promo>();
 
@@ -76,12 +77,7 @@ function MainScreen(props: PropsFromRedux): JSX.Element {
                     </svg>
                     <span>Play</span>
                   </button>
-                  <button className="btn btn--list film-card__button" type="button">
-                    <svg viewBox="0 0 19 20" width="19" height="20">
-                      <use xlinkHref="#add"></use>
-                    </svg>
-                    <span>My list</span>
-                  </button>
+                  <MyListButton isFavorite={promo.isFavorite}/>
                 </div>
               </div>
             </div>
@@ -111,5 +107,5 @@ function MainScreen(props: PropsFromRedux): JSX.Element {
   }
 }
 
-export { MainScreen };
-export default connector(MainScreen);
+export { MainPage };
+export default connector(MainPage);

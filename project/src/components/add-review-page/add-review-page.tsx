@@ -1,6 +1,6 @@
 import { Links } from '../../constants/const';
 import AddReviewForm from '../add-review-form/add-review-form';
-import NotFoundPage from '../not-found-page/NotFoundPage';
+import NotFoundPage from '../not-found-page/not-found-page';
 import { ConnectedProps, connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Logo from '../logo/logo';
